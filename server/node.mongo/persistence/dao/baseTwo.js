@@ -14,7 +14,6 @@ class Base {
     create(data) {
         var self = this;
         return Q.Promise(function (resolve, reject) {
-            console.log(process.cwd());
             var mod = new self.model(data);
             mod.save(function (err, result) {
                 if (err) {
@@ -31,7 +30,9 @@ class Base {
     find(condition) {
         var self = this;
         return Q.Promise(function (resolve, reject) {
-            console.log(process.cwd());
+            if (!condition) {
+                condition = {};
+            }
             self.model.find(condition)
                 .exec(function (err, result) {
                     if (err) {
