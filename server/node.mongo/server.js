@@ -10,6 +10,7 @@ var logger = require('./utils/logger.js').getLogger("server");
 var db = mongoose.connection;
 db.on('error', function (err) {
     logger.error('cconnect mongodb err:',err);
+    process.exit();
 });
 db.once('open', function callback() {
     logger.debug('mongodb ready!');
