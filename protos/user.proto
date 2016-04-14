@@ -1,0 +1,37 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "io.grpc.examples.helloworld";
+option java_outer_classname = "HelloWorldProto";
+option objc_class_prefix = "HLW";
+
+package node_mongo;
+
+// The greeting service definition.
+service User {
+  // Sends a greeting
+  rpc find (HelloRequest) returns (HelloReply) {}
+  rpc findByName (HelloRequest) returns (HelloReply) {}
+  //rpc SayHello (HelloRequest) returns (HelloReply) {}
+}
+
+message Other {
+  string name = 1;
+  int32 age =2;
+}
+
+message SendReply {
+  string code = 1;
+  string msg = 2;
+  string data = 3;
+}
+
+// The request message containing the user's name.
+message HelloRequest {
+  string name = 1;
+}
+
+// The response message containing the greetings
+message HelloReply {
+  string message = 1;
+}
