@@ -12,18 +12,18 @@ Business.create = function (data) {
     return userDao.create(data);
 }
 
-Business.find = function () {
-    var data = {};
-    return userDao.find(data);
+Business.find = function (data, callback) {
+    console.log(data);
+    callback(userDao.find());
 }
 
-Business.findByCondition = function (data) {
+Business.findByCondition = function (data, callback) {
     var data = {name: data};
-    return userDao.find(data);
+    return userDao.find(data).notify(callback);
 }
 
-Business.findByName = function (data) {
-    return userDao.findByName(data);
+Business.findByName = function (data, callback) {
+    return userDao.findByName(data).notify(callback);
 }
 
 Business.findByStatus = function () {

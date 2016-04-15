@@ -7,9 +7,11 @@ var grpc = require('grpc');
 
 var logger = require('./utils/logger.js').getLogger("server");
 
+mongoose.connect('mongodb://localhost:27017/go');
 var db = mongoose.connection;
 db.on('error', function (err) {
     logger.error('cconnect mongodb err:',err);
+    process.exit();
 });
 db.once('open', function callback() {
     logger.debug('mongodb ready!');
@@ -24,4 +26,3 @@ db.once('open', function callback() {
     server.start();
     logger.debug('service ready!');
 });
-mongoose.connect('mongodb://127.0.0.1:27017/go');
