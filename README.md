@@ -12,5 +12,5 @@ Second start client：
 ```sh
 $ cd client/node/
 $ npm install
-$ node bin/www    or   npm start
+$ npm start
 ```
