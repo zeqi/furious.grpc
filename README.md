@@ -18,6 +18,7 @@ $ npm start
 ```sh
 $ pm2 list
 ```
+```javascript
 ┌─────────────┬────┬─────────┬───────┬────────┬─────────┬────────┬──────────────┬──────────┐
 │ App name    │ id │ mode    │ pid   │ status │ restart │ uptime │ memory       │ watching │
 ├─────────────┼────┼─────────┼───────┼────────┼─────────┼────────┼──────────────┼──────────┤
@@ -30,10 +31,12 @@ $ pm2 list
 │ grpc.client │ 6  │ cluster │ 17387 │ online │ 0       │ 13m    │ 86.242 MB    │ disabled │
 │ grpc.client │ 7  │ cluster │ 17412 │ online │ 0       │ 13m    │ 85.691 MB    │ disabled │
 └─────────────┴────┴─────────┴───────┴────────┴─────────┴────────┴──────────────┴──────────┘
+```
 
 ```sh
 $ ab -n 8000 -c 200 http://localhost:3000/users/zeqi
 ```
+```javascript
 This is ApacheBench, Version 2.3 <$Revision: 1528965 $>
 Copyright 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/
 Licensed to The Apache Software Foundation, http://www.apache.org/
@@ -88,3 +91,4 @@ Percentage of the requests served within a certain time (ms)
   98%    384
   99%    396
  100%    456 (longest request)
+```
