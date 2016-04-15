@@ -14,16 +14,16 @@ Business.create = function (data) {
 
 Business.find = function (data, callback) {
     console.log(data);
-    callback(userDao.find());
+    userDao.find().nodeify(callback);
 }
 
 Business.findByCondition = function (data, callback) {
     var data = {name: data};
-    return userDao.find(data).notify(callback);
+    return userDao.find(data).nodeify(callback);
 }
 
 Business.findByName = function (data, callback) {
-    return userDao.findByName(data).notify(callback);
+    return userDao.findByName(data).nodeify(callback);
 }
 
 Business.findByStatus = function () {
