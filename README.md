@@ -1,5 +1,5 @@
 #Documentation
-In the furious.grpc directory.
+In the `furious.grpc` directory.
 
 First start service:
 ```sh
