@@ -12,13 +12,11 @@ Business.create = function (data) {
     return userDao.create(data);
 }
 
-Business.find = function (data, callback) {
-    console.log(data);
-    userDao.find().nodeify(callback);
+Business.find = function (callback) {
+    return userDao.find().nodeify(callback);
 }
 
 Business.findByCondition = function (data, callback) {
-    var data = {name: data};
     return userDao.find(data).nodeify(callback);
 }
 

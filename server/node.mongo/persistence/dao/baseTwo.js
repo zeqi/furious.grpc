@@ -20,7 +20,6 @@ class Base {
                     console.log(err);
                     reject(err);
                 } else {
-                    console.log(result);
                     resolve(result);
                 }
             });
@@ -39,7 +38,6 @@ class Base {
                         console.log(err);
                         reject(err);
                     } else {
-                        console.log(result);
                         resolve(result);
                     }
                 });

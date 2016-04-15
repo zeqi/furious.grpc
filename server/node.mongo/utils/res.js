@@ -20,19 +20,19 @@ Enum.resCode = {
     res500: 500
 }
 
-function comm() {
+function res() {
 
 }
 
-comm.result = function (data, status, code, msg) {
+res.result = function (data, status, code, msg) {
     this.data = data || {};
     this.status = status || Enum.resStatus.OK;
     this.code = code || Enum.resCode.res200;
     this.msg = msg || "";
 }
 
-comm.serializePre = function (data) {
+res.pre = function (data) {
     return "<pre>" + JSON.stringify(data, null, 4) + "</pre>";
 }
 
-module.exports = comm;
+module.exports = res;
