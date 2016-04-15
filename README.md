@@ -1,4 +1,4 @@
-#Documentation
+#Quick start
 In the `furious.grpc` directory.
 
 First start service:
@@ -14,7 +14,21 @@ $ cd client/node/
 $ npm install
 $ npm start
 ```
+
 #Concurrent
+
+First start service:
+```sh
+$ cd server/node.mongo/
+$ pm2 start server.js --name='grpc.server' -i max
+```
+
+Second start client：
+```sh
+$ cd client/node/
+$ pm2 start bin/www --name='grpc.client' -i max
+```
+
 ```sh
 $ pm2 list
 ```
