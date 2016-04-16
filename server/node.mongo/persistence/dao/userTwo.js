@@ -16,13 +16,11 @@ class Dao extends BaseDao {
 
     findByName(name) {
         return Q.Promise(function (resolve, reject) {
-            console.log(process.cwd());
             model.findByName(name, function (err, result) {
                 if (err) {
                     console.log(err);
                     reject(err);
                 } else {
-                    console.log(result);
                     resolve(result);
                 }
             });
@@ -32,13 +30,11 @@ class Dao extends BaseDao {
     findByStatus(name) {
         var dog = new model({status: 0});
         return Q.Promise(function (resolve, reject) {
-            console.log(process.cwd());
             dog.findByStatus(function (err, result) {
                 if (err) {
                     console.log(err);
                     reject(err);
                 } else {
-                    console.log(result);
                     resolve(result);
                 }
             });

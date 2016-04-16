@@ -8,21 +8,30 @@ function Business() {
 
 }
 
-Business.create = function (data) {
-    return userDao.create(data);
+Business.save = function (data, callback) {
+    return userDao.save(data).nodeify(callback);
+}
+
+Business.create = function (data, callback) {
+    return userDao.create(data).nodeify(callback);
 }
 
 Business.find = function (callback) {
     return userDao.find().nodeify(callback);
 }
 
-Business.findByCondition = function (data, callback) {
-    return userDao.find(data).nodeify(callback);
+Business.findById = function (data, callback) {
+    return userDao.findById(data).nodeify(callback);
 }
 
 Business.findByName = function (data, callback) {
     return userDao.findByName(data).nodeify(callback);
 }
+
+Business.findByCondition = function (data, callback) {
+    return userDao.find(data).nodeify(callback);
+}
+
 
 Business.findByStatus = function () {
     return userDao.findByStatus();

@@ -5,30 +5,57 @@
 var user = require('../business/user');
 var normalize = require('../utils/normalize');
 var res = require('../utils/res');
+var resCode = require('../define/resCode');
 
 function api() {
 
 }
 
-api.create = function (data) {
-    return user.create(data);
+api.save = function (req, callback) {
+    return user.save(req.request).then(function (data) {
+        return callback(null, new res.OK(normalize(data)));
+    }).fail(function (err) {
+        return callback(null, new res.Error(resCode.res201, err.message));
+    });
+}
+
+api.create = function (req, callback) {
+    return user.create(req.request.docs).then(function (data) {
+        return callback(null, new res.OK(normalize(data)));
+    }).fail(function (err) {
+        return callback(null, new res.Error(resCode.res201, err.message));
+    });
 }
 
 api.find = function (req, callback) {
     return user.find().then(function (data) {
-        return callback(null, new res.result(normalize(data)));
+        return callback(null, new res.OK(normalize(data)));
+    }).fail(function (err) {
+        return callback(null, new res.Error(resCode.res201, err.message));
     });
 }
 
-api.findByCondition = function (req, callback) {
-    return user.find(req.request).then(function (data) {
-        return callback(null, new res.result(normalize(data)));
+api.findById = function (req, callback) {
+    return user.findById(req.request.id).then(function (data) {
+        return callback(null, new res.OK(normalize(data)));
+    }).fail(function (err) {
+        return callback(null, new res.Error(resCode.res201, err.message));
     });
 }
 
 api.findByName = function (req, callback) {
     return user.findByName(req.request).then(function (data) {
-        return callback(null, new res.result(normalize(data)));
+        return callback(null, new res.OK(normalize(data)));
+    }).fail(function (err) {
+        return callback(null, new res.Error(resCode.res201, err.message));
+    });
+}
+
+api.findByCondition = function (req, callback) {
+    return user.find(req.request).then(function (data) {
+        return callback(null, new res.OK(normalize(data)));
+    }).fail(function (err) {
+        return callback(null, new res.Error(resCode.res201, err.message));
     });
 }
 
