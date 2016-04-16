@@ -14,7 +14,7 @@ class Dao extends BaseDao {
         super(model);
     }
 
-    findByName(name) {
+    findByName(name, callback) {
         return Q.Promise(function (resolve, reject) {
             model.findByName(name, function (err, result) {
                 if (err) {
@@ -24,11 +24,11 @@ class Dao extends BaseDao {
                     resolve(result);
                 }
             });
-        });
+        }).nodeify(callback);
     }
 
-    findByStatus(name) {
-        var dog = new model({status: 0});
+    findByStatus(status, callback) {
+        var dog = new model({status: status});
         return Q.Promise(function (resolve, reject) {
             dog.findByStatus(function (err, result) {
                 if (err) {
@@ -38,7 +38,7 @@ class Dao extends BaseDao {
                     resolve(result);
                 }
             });
-        });
+        }).nodeify(callback);
     }
 
     get NAME() {
