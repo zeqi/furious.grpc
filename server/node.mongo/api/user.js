@@ -37,7 +37,12 @@ api.find = function (req, callback) {
 
 api.findById = function (req, callback) {
     return user.findById(req.request.id).then(function (data) {
-        return callback(null, new res.OK(normalize(data)));
+        try {
+            var result = new res.OK(normalize(data));
+            return callback(null,result);
+        } catch (err) {
+            console.log(err);
+        }
     }).fail(function (err) {
         return callback(null, new res.Error(resCode.res201, err.message));
     });

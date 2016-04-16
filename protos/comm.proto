@@ -1,0 +1,10 @@
+syntax = "proto3";
+
+package node_mongo;
+
+message Res {
+    optional int32 status = 1;
+    optional int32 code = 2;
+    optional string msg = 3;
+    extensions 4 to 100;
+}

@@ -1,14 +1,17 @@
 syntax = "proto3";
 
+import "comm.proto";
+
 package node_mongo;
 
-// The user service definition.
-service User {
-  rpc save (Req_Doc) returns (Res_Doc) {}
-  rpc create (Req_Docs) returns (Res_Docs) {}
-  rpc find (Req_Default) returns (Res_Docs) {}
-  rpc findById (Id) returns(Res_Doc){}
-  rpc findByName (Name) returns (Res_Docs) {}
+message DocModel {
+    optional string _id = 1;
+    optional string mobile = 2;
+    optional string name = 3;
+    optional string createTime = 4;
+    optional int32 gender = 5;
+    optional int32 status = 6;
+    optional int32 __v = 7;
 }
 
 message Req_Doc {
@@ -25,7 +28,7 @@ message Res_Doc {
     optional int32 status = 1;
     optional int32 code = 2;
     optional string msg = 3;
-    optional DocModel data = 4 [default = null];
+    optional DocModel data = 4;
 }
 
 message Res_Docs {
@@ -47,12 +50,11 @@ message Req_Default {
 
 }
 
-message DocModel {
-    optional string _id = 1;
-    optional string mobile = 2;
-    optional string name = 3;
-    optional string createTime = 4;
-    optional int32 gender = 5;
-    optional int32 status = 6;
-    optional int32 __v = 7;
+// The user service definition.
+service User {
+  rpc save (Req_Doc) returns (Res_Doc) {}
+  rpc create (Req_Docs) returns (Res_Docs) {}
+  rpc find (Req_Default) returns (Res_Docs) {}
+  rpc findById (Id) returns(Res_Doc){}
+  rpc findByName (Name) returns (Res_Docs) {}
 }
