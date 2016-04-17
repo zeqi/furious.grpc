@@ -18,7 +18,7 @@ class Dao extends BaseDao {
     findByName(name, callback) {
         this.method = 'findByName';
         var self = this;
-        if (name){
+        if (!name){
             return Q.reject(self.paramError(name)).nodeify(callback);
         }
         return Q.Promise(function (resolve, reject) {
