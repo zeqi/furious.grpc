@@ -28,12 +28,12 @@ class Base {
 
     taskError(task) {
         var self = this;
-        return new DaoError('Exec function ' + self.method + ' find invalid task:' + task, task)
+        return new DaoError('Exec function ' + self.method + ' find invalid task:' + JSON.stringify(task), task)
     }
 
     paramError(param) {
         var self = this;
-        return new DaoError('Exec function ' + self.method + ' find invalid param:' + param, param)
+        return new DaoError('Exec function ' + self.method + ' find invalid param:' + JSON.stringify(param), param)
     }
 
     execTask(task, callback) {
@@ -80,7 +80,7 @@ class Base {
             data = [data];
         }
         return Q.Promise(function (resolve, reject) {
-            self.model.create(data,function (err, docs) {
+            self.model.create(data, function (err, docs) {
                 if (err) {
                     logger.error(self.method, 'Error:\n', err);
                     reject(err);

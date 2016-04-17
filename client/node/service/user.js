@@ -16,6 +16,14 @@ function eachAttributes(doc) {
       console.log(item);
     }
 }
+
+console.log(proto);
+
+console.log(proto.data);
+
+//console.log(new proto.Msg());
+console.log(new proto.Res());
+
 console.log(new proto.Req_Doc());
 console.log(new proto.Res_Doc());
 console.log(new proto.Res_Docs());

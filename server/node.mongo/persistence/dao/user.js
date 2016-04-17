@@ -6,6 +6,7 @@
 
 var Q = require('q');
 
+var logger = require('../../utils/logger.js').getLogger("dao/user");
 var model = require('../models/user').model;
 var BaseDao = require('./base');
 var DaoError = BaseDao.DaoError;
@@ -18,15 +19,16 @@ class Dao extends BaseDao {
     findByName(name, callback) {
         this.method = 'findByName';
         var self = this;
-        if (!name){
+        if (!name) {
             return Q.reject(self.paramError(name)).nodeify(callback);
         }
         return Q.Promise(function (resolve, reject) {
             model.findByName(name, function (err, result) {
                 if (err) {
-                    console.log(err);
+                    logger.error(self.method, 'Error:\n', err);
                     reject(err);
                 } else {
+                    logger.debug(self.method, 'Result:\n', result);
                     resolve(result);
                 }
             });
@@ -36,16 +38,17 @@ class Dao extends BaseDao {
     findByStatus(status, callback) {
         this.method = 'findByStatus';
         var self = this;
-        if (!status){
+        if (!status) {
             return Q.reject(self.paramError(status));
         }
         var dog = new model({status: status});
         return Q.Promise(function (resolve, reject) {
             dog.findByStatus(function (err, result) {
                 if (err) {
-                    console.log(err);
+                    logger.error(self.method, 'Error:\n', err);
                     reject(err);
                 } else {
+                    logger.debug(self.method, 'Result:\n', result);
                     resolve(result);
                 }
             });

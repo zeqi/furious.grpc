@@ -35,7 +35,7 @@ message Res_Docs {
     optional int32 status = 1;
     optional int32 code = 2;
     optional string msg = 3;
-    repeated DocModel data = 4 ;
+    repeated DocModel data = 4;
 }
 
 message Id {
@@ -58,3 +58,11 @@ service User {
   rpc findById (Id) returns(Res_Doc){}
   rpc findByName (Name) returns (Res_Docs) {}
 }
+
+extend Res {
+    optional string data = 100;
+}
+
+//message Msg {
+
+//}
