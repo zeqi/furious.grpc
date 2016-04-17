@@ -30,7 +30,7 @@ router.get('/name/:name', function (req, res, next) {
     });
 });
 
-router.get('/save', function (req, res, next) {
+router.get('/save/:id', function (req, res, next) {
     var user = new userProto.Req_Doc('wangbing','13621026810');
     userApi.save(user, function (err, response) {
         console.log(err);
@@ -39,7 +39,7 @@ router.get('/save', function (req, res, next) {
     });
 });
 
-router.get('/create', function (req, res, next) {
+router.get('/create/:id', function (req, res, next) {
     var users=[
         new userProto.Req_Doc('wanghehe','13621026810'),
         new userProto.Req_Doc('zhanglei','13621026810')

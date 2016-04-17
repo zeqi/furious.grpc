@@ -36,6 +36,16 @@ api.find = function (req, callback) {
 }
 
 api.findById = function (req, callback) {
+    return user.findById(req.request.id,function (err,doc) {
+        if (err){
+            return callback(null, new res.Error(resCode.res201, err.message));
+        }
+        var result = new res.OK(normalize(doc));
+        return callback(null,result);
+    });
+}
+
+/*api.findById = function (req, callback) {
     return user.findById(req.request.id).then(function (data) {
         try {
             var result = new res.OK(normalize(data));
@@ -46,7 +56,7 @@ api.findById = function (req, callback) {
     }).fail(function (err) {
         return callback(null, new res.Error(resCode.res201, err.message));
     });
-}
+}*/
 
 api.findByName = function (req, callback) {
     return user.findByName(req.request).then(function (data) {

@@ -5,7 +5,7 @@
 'use strict'
 
 var model = require('../models/product').model;
-var BaseDao = require('./baseTwo');
+var BaseDao = require('./base');
 
 class Dao extends BaseDao {
     constructor() {

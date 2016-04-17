@@ -7,7 +7,7 @@
 var Q = require('q');
 
 var model = require('../models/user').model;
-var BaseDao = require('./baseTwo');
+var BaseDao = require('./base');
 
 class Dao extends BaseDao {
     constructor() {

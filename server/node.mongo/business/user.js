@@ -2,7 +2,7 @@
  * Created by zhuxijun on 16-4-8.
  */
 
-var userDao = require('../persistence/dao/userTwo');
+var userDao = require('../persistence/dao/user');
 
 function Business() {
 
