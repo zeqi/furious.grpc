@@ -28,12 +28,12 @@ class Base {
 
     taskError(task) {
         var self = this;
-        new DaoError('Exec function ' + self.method + ' find invalid task:' + task, task)
+        return new DaoError('Exec function ' + self.method + ' find invalid task:' + task, task)
     }
 
     paramError(param) {
         var self = this;
-        new DaoError('Exec function ' + self.method + ' find invalid param:' + param, param)
+        return new DaoError('Exec function ' + self.method + ' find invalid param:' + param, param)
     }
 
     execTask(task, callback) {
