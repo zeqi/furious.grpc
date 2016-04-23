@@ -2,6 +2,8 @@ syntax = "proto3";
 
 import "comm.proto";
 
+//option java_package = "com.google.apps.jspb.proto";
+//option java_multiple_files = true;
 package node_mongo;
 
 message DocModel {
@@ -60,9 +62,14 @@ service User {
 }
 
 extend Res {
-    optional string data = 100;
+    optional DocModel data = 4;
 }
 
-//message Msg {
-
-//}
+message Msg {
+    oneof oneof_field {
+        uint32 oneof_uint32 = 111;
+        //DocModel oneof_foreign_message = 112;
+        string oneof_string = 113;
+        bytes oneof_bytes = 114;
+    }
+}

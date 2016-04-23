@@ -17,11 +17,11 @@ function eachAttributes(doc) {
     }
 }
 
-console.log(proto);
+//console.log(proto);
 
-console.log(proto.data);
+console.log(proto.data.field);
 
-//console.log(new proto.Msg());
+console.log(new proto.Msg(111,'22222'));
 console.log(new proto.Res());
 
 console.log(new proto.Req_Doc());
