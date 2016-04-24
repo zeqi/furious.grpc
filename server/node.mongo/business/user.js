@@ -17,11 +17,19 @@ Business.create = function (data, callback) {
 }
 
 Business.find = function (callback) {
-    return userDao.find().nodeify(callback);
+    return userDao.find({}, 2, 20, {createTime: -1}).nodeify(callback);
 }
 
 Business.findById = function (data, callback) {
     return userDao.findById(data).nodeify(callback);
+}
+
+Business.findListAndCount = function (data,callback) {
+    return userDao.findListAndCount({}, 2, 20, {createTime: -1}).nodeify(callback);
+}
+
+Business.count = function (callback) {
+    return userDao.count({}).nodeify(callback);
 }
 
 Business.findByName = function (data, callback) {

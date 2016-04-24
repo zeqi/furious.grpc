@@ -28,11 +28,27 @@ api.create = function (req, callback) {
 }
 
 api.find = function (req, callback) {
-    return user.find().then(function (data) {
+/*    return user.count().then(function (data) {
         return callback(null, new res.OK(normalize(data)));
     }).fail(function (err) {
         return callback(null, new res.Error(resCode.res201, err.message));
+    });*/
+
+    return user.findListAndCount().then(function (data) {
+        try {
+            return callback(null, new res.OK(normalize(data)));
+        } catch (err) {
+            console.log(err);
+        }
+    }).fail(function (err) {
+        return callback(null, new res.Error(resCode.res201, err.message));
     });
+
+    /*return user.find().then(function (data) {
+        return callback(null, new res.OK(normalize(data)));
+    }).fail(function (err) {
+        return callback(null, new res.Error(resCode.res201, err.message));
+    });*/
 }
 
 /*api.findById = function (req, callback) {

@@ -4,10 +4,20 @@
 
 'use strict'
 
+//===============================
+//      Third party package
+//===============================
 var Q = require('q');
 
+//===============================
+//      Custom package
+//===============================
 var logger = require('../../utils/logger.js').getLogger("dao/base");
+var validate = require('../../utils/validate');
 
+//===============================
+//      Logical start
+//===============================
 class DaoError {
     constructor(message, value, name, kind, path, reason) {
         this.message = message || 'Dao Error';
@@ -24,6 +34,7 @@ class Base {
         this.model = model;
         this.task = null;
         this.method = '';
+        this.customPageSize = 10;
     }
 
     taskError(task) {
@@ -92,13 +103,77 @@ class Base {
         }).nodeify(callback);
     }
 
-    find(condition, callback) {
-        this.method = 'find';
+    findDefine(condition, pageIndex, pageSize, sort) {
+        this.method = 'findDefine';
         var self = this;
         if (!condition) {
             condition = {};
         }
         var task = self.model.find(condition);
+        if (validate.isNumber(pageIndex)) {
+            if (!validate.isNumber(pageSize)) {
+                pageSize = self.customPageSize;
+            }
+            var startLine = (pageIndex - 1) * pageSize
+            task.limit(pageSize).skip(startLine);
+        }
+        if (validate.isObject(sort)) {
+            task.sort(sort);
+        }
+
+        return task;
+    }
+
+    find(condition, pageIndex, pageSize, sort, callback) {
+        this.method = 'find';
+        var self = this;
+        var task = self.findDefine(condition, pageIndex, pageSize, sort);
+        return self.execTask(task, callback).nodeify(callback);
+    }
+
+    findListAndCount(condition, pageIndex, pageSize, sort, callback) {
+        this.method = 'findListAndCount';
+        var self = this;
+        if (!condition) {
+            condition = {};
+        }
+
+        var promises = [];
+        promises.push(self.find(condition, pageIndex, pageSize, sort, callback));
+        promises.push(self.count(condition, callback));
+
+        return Q.allSettled(promises).then(function (result) {
+            if (result && result[0].state == 'fulfilled' && result[1].state == 'fulfilled') {
+                return {
+                    list: result[0].value,
+                    count: result[1].value
+                }
+            }
+            return {
+                list: [],
+                count: 0
+            }
+        }).nodeify(callback);
+
+        /*        return Q.all([self.findDefine(condition, pageIndex, pageSize, sort),self.countDefine(condition)]).then(function (result) {
+         logger.debug(self.method, 'Result:\n', result);
+         if (result&&result.length==2){
+         return {
+         list:result[0],
+         count:result[1]
+         }
+         }
+         return {
+         list:[],
+         count:0
+         }
+         }).nodeify(callback);*/
+    }
+
+    findAll(callback) {
+        this.method = 'findAll';
+        var self = this;
+        var task = self.model.find();
         return self.execTask(task, callback).nodeify(callback);
     }
 
@@ -106,7 +181,7 @@ class Base {
         this.method = 'findById';
         var self = this;
         if (!id) {
-            Q.reject(self.paramError(id)).nodeify(callback);
+            return Q.reject(self.paramError(id)).nodeify(callback);
         }
         var task = self.model.findById(id);
         return self.execTask(task, callback).nodeify(callback);
@@ -119,6 +194,37 @@ class Base {
             condition = {};
         }
         var task = self.model.findOne(condition);
+        return self.execTask(task, callback).nodeify(callback);
+    }
+
+    findByIdAndUpdate(id, update, callback) {
+        this.method = 'findByIdAndUpdate';
+        var self = this;
+        if (!id) {
+            return Q.reject(self.paramError(id)).nodeify(callback);
+        }
+        if (!update) {
+            return Q.reject(self.paramError(update)).nodeify(callback);
+        }
+
+        var task = self.model.findByIdAndUpdate(id, update);
+        return self.execTask(task, callback).nodeify(callback);
+    }
+
+    countDefine(condition) {
+        this.method = 'count';
+        var self = this;
+        if (!condition) {
+            condition = {};
+        }
+        var task = self.model.count(condition);
+        return task;
+    }
+
+    count(condition, callback) {
+        this.method = 'count';
+        var self = this;
+        var task = self.countDefine(condition);
         return self.execTask(task, callback).nodeify(callback);
     }
 

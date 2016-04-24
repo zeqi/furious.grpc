@@ -6,6 +6,7 @@ var mongoose = require('mongoose');
 var grpc = require('grpc');
 
 var logger = require('./utils/logger.js').getLogger("server");
+var extend = require('./utils/extend');
 
 mongoose.connect('mongodb://localhost:27017/go');
 var db = mongoose.connection;
