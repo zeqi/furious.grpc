@@ -47,19 +47,22 @@ class Base {
         return new DaoError('Exec function ' + self.method + ' find invalid param:' + JSON.stringify(param), param)
     }
 
-    execTask(task, callback) {
+    execTask(task, callback, methodName) {
         var self = this;
+        if (!methodName) {
+            methodName = self.method;
+        }
         if (!task) {
             return Q.reject(self.taskError(task)).nodeify(callback);
         }
         return Q.Promise(function (resolve, reject) {
             task.exec(function (err, result) {
                 if (err) {
-                    logger.error(self.method, 'Error:\n', err);
-                    reject(err);
+                    logger.error(methodName, 'Error:\n', err);
+                    return reject(err);
                 } else {
-                    logger.debug(self.method, 'Result:\n', result);
-                    resolve(result);
+                    logger.debug(methodName, 'Result:\n', result);
+                    return resolve(result);
                 }
             });
         }).nodeify(callback);
@@ -75,10 +78,10 @@ class Base {
             mod.save(function (err, doc) {
                 if (err) {
                     logger.error(self.method, 'Error:\n', err);
-                    reject(err);
+                    return reject(err);
                 } else {
                     logger.debug(self.method, 'Result:\n', doc);
-                    resolve(doc);
+                    return resolve(doc);
                 }
             });
         }).nodeify(callback);
@@ -94,17 +97,17 @@ class Base {
             self.model.create(data, function (err, docs) {
                 if (err) {
                     logger.error(self.method, 'Error:\n', err);
-                    reject(err);
+                    return reject(err);
                 } else {
                     logger.debug(self.method, 'Result:\n', docs);
-                    resolve(docs);
+                    return resolve(docs);
                 }
             });
         }).nodeify(callback);
     }
 
     findDefine(condition, pageIndex, pageSize, sort) {
-        this.method = 'findDefine';
+        var method = 'findDefine';
         var self = this;
         if (!condition) {
             condition = {};
@@ -128,7 +131,7 @@ class Base {
         this.method = 'find';
         var self = this;
         var task = self.findDefine(condition, pageIndex, pageSize, sort);
-        return self.execTask(task, callback).nodeify(callback);
+        return self.execTask(task, callback, self.method).nodeify(callback);
     }
 
     findListAndCount(condition, pageIndex, pageSize, sort, callback) {
@@ -143,6 +146,7 @@ class Base {
         promises.push(self.count(condition, callback));
 
         return Q.allSettled(promises).then(function (result) {
+            //logger.debug(methodName, 'Result:\n', result);
             if (result && result[0].state == 'fulfilled' && result[1].state == 'fulfilled') {
                 return {
                     list: result[0].value,
@@ -153,19 +157,25 @@ class Base {
                 list: [],
                 count: 0
             }
+        }).fail(function (err) {
+            logger.error(self.method, 'Error:\n', err);
+            return {
+                list: [],
+                count: 0
+            }
         }).nodeify(callback);
 
-        /*        return Q.all([self.findDefine(condition, pageIndex, pageSize, sort),self.countDefine(condition)]).then(function (result) {
+        /*        return Q.all([self.findDefine(condition, pageIndex, pageSize, sort), self.countDefine(condition)]).then(function (result) {
          logger.debug(self.method, 'Result:\n', result);
-         if (result&&result.length==2){
+         if (result && result.length == 2) {
          return {
-         list:result[0],
-         count:result[1]
+         list: result[0],
+         count: result[1]
          }
          }
          return {
-         list:[],
-         count:0
+         list: [],
+         count: 0
          }
          }).nodeify(callback);*/
     }
@@ -212,7 +222,7 @@ class Base {
     }
 
     countDefine(condition) {
-        this.method = 'count';
+        var method = 'countDefine';
         var self = this;
         if (!condition) {
             condition = {};
@@ -225,7 +235,7 @@ class Base {
         this.method = 'count';
         var self = this;
         var task = self.countDefine(condition);
-        return self.execTask(task, callback).nodeify(callback);
+        return self.execTask(task, callback, self.method).nodeify(callback);
     }
 
     update(condition, callback) {

@@ -28,15 +28,15 @@ api.create = function (req, callback) {
 }
 
 api.find = function (req, callback) {
-/*    return user.count().then(function (data) {
-        return callback(null, new res.OK(normalize(data)));
-    }).fail(function (err) {
-        return callback(null, new res.Error(resCode.res201, err.message));
-    });*/
+    /*    return user.count().then(function (data) {
+     return callback(null, new res.OK(normalize(data)));
+     }).fail(function (err) {
+     return callback(null, new res.Error(resCode.res201, err.message));
+     });*/
 
     return user.findListAndCount().then(function (data) {
         try {
-            return callback(null, new res.OK(normalize(data)));
+            return callback(null, new res.OK({list: normalize(data.list), count: data.count}));
         } catch (err) {
             console.log(err);
         }
@@ -44,28 +44,28 @@ api.find = function (req, callback) {
         return callback(null, new res.Error(resCode.res201, err.message));
     });
 
-    /*return user.find().then(function (data) {
-        return callback(null, new res.OK(normalize(data)));
-    }).fail(function (err) {
-        return callback(null, new res.Error(resCode.res201, err.message));
-    });*/
+    /*    return user.find().then(function (data) {
+     return callback(null, new res.OK(normalize(data)));
+     }).fail(function (err) {
+     return callback(null, new res.Error(resCode.res201, err.message));
+     });*/
 }
 
 /*api.findById = function (req, callback) {
-    return user.findById(req.request.id,function (err,doc) {
-        if (err){
-            return callback(null, new res.Error(resCode.res201, err.message));
-        }
-        var result = new res.OK(normalize(doc));
-        return callback(null,result);
-    });
-}*/
+ return user.findById(req.request.id,function (err,doc) {
+ if (err){
+ return callback(null, new res.Error(resCode.res201, err.message));
+ }
+ var result = new res.OK(normalize(doc));
+ return callback(null,result);
+ });
+ }*/
 
 api.findById = function (req, callback) {
     return user.findById(req.request.id).then(function (data) {
         try {
             var result = new res.OK(normalize(data));
-            return callback(null,result);
+            return callback(null, result);
         } catch (err) {
             console.log(err);
         }
