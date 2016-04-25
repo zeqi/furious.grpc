@@ -52,6 +52,7 @@ class Base {
         if (!methodName) {
             methodName = self.method;
         }
+
         if (!task) {
             return Q.reject(self.taskError(task)).nodeify(callback);
         }
@@ -193,7 +194,7 @@ class Base {
         if (!id) {
             return Q.reject(self.paramError(id)).nodeify(callback);
         }
-        var task = self.model.findById(id);
+        var task = self.model.findById  (id);
         return self.execTask(task, callback).nodeify(callback);
     }
 
