@@ -1,0 +1,16 @@
+{
+  "name": "codegen",
+  "version": "1.0.0",
+  "description": "Code generator",
+  "main": "index.js",
+  "scripts": {
+    "test": "node index"
+  },
+  "author": "zeqi",
+  "license": "ISC",
+  "dependencies": {
+    "del": "^2.2.0",
+    "gulp": "^3.9.1",
+    "mustache": "^2.2.1"
+  }
+}
