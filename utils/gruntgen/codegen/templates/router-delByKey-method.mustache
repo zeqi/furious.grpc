@@ -1,0 +1,147 @@
+
+//======================================
+//     {{&routeClassName}}.deleteBy{{&methodSignature}}
+//======================================
+
+{{&routeClassName}}.deleteBy{{&methodSignature}}_method_qname = '{{&routeClassName}}.deleteBy{{&methodSignature}}';
+
+/**
+* The target DAO invoker of deleting an existing {{&moduleName}}.
+* @param {object} context, the context data structure is as below:
+*   {
+*      targetFnQName: <string>, 
+*      opts: <object>, 
+*      result: <object>
+*      fault: <Error>
+*   }
+* @private
+*/
+{{&routeClassName}}.prototype._deleteBy{{&methodSignature}} = function(context) {
+   var method = '_deleteBy{{&methodSignature}}';
+   try {
+     var req = context.opts.req;
+     var res = context.opts.res;
+     var id = req.params['{{&paramName}}'];
+     context.opts.id = id;
+     logger.debug(method, ">>>", id);
+
+     return dao.deleteBy{{&methodSignature}}(id).then(function(result) {
+        context.result = result;
+        return context;
+     }).fail(function(error) {
+      context.fault = error;
+      return context;
+     });
+   } catch (error) {
+     logger.error("Error occurs during DAO call: ", error);
+     context.fault = error;
+     return Q(context);
+   }
+   
+};
+
+/**
+ * Delete an existing {{&moduleName}}
+ *
+ * {{#annotations}}
+ * {{{.}}}
+ * {{/annotations}}
+ *
+ */
+{{&routeClassName}}.prototype.deleteBy{{&methodSignature}} = function (req, res) {
+  var context = {
+       targetFnQName: {{&routeClassName}}.deleteBy{{&methodSignature}}_method_qname,
+       opts: {
+           req: req,
+           res: res
+       },
+       result: null,
+       fault: null
+  };
+  var self = this;
+  var preHookChainInvoker = new PreHookChainInvoker(context);
+  var postHookChainInvoker = new PostHookChainInvoker(context);
+
+  logger.debug('[' + {{&routeClassName}}.deleteBy{{&methodSignature}}_method_qname + '] Enter');
+
+  try {
+    // preHook call
+    preHookChainInvoker.invoke()
+    // DAO call
+    .then(function(context) {
+      if (context.fault) {
+        return context;
+      }
+      return self._deleteBy{{&methodSignature}}(context);
+    })
+    // postHook call
+    .then(function(context) {
+      if (context.fault) {
+        return context;
+      }
+      return postHookChainInvoker.invoke();
+    })
+    // response
+    .then(function(context) {
+      if (context.fault) {
+        logger.error('[' + {{&routeClassName}}.deleteBy{{&methodSignature}}_method_qname + '] Exit(failed): ', context.fault);
+        var errorCode = context.fault.errorCode;
+        if (! errorCode) {
+          errorCode = requestUtil.httpcode.INTERNAL_ERROR;
+        }
+        var errorMsg = (context.fault.reason) ? context.fault.reason : 'Failed to delete record';
+        var details = (context.fault.details) ? context.fault.details : context.fault;
+        requestUtil.unifiedErrorResponse(context.opts.req,
+            errorMsg,
+            details,
+            errorCode, 
+            context.opts.res
+        );
+        return;
+      }
+
+     if (context.result) {
+         requestUtil.emptyResponse(context.opts.res, requestUtil.httpcode.OK);
+         logger.debug('[' + {{&routeClassName}}.deleteBy{{&methodSignature}}_method_qname + '] Exit(sucessed): ', context.result);
+         return;
+     }
+
+     logger.error('[' + {{&routeClassName}}.deleteBy{{&methodSignature}}_method_qname + '] Exit(failed): ', new Error('The record with id ' + context.opts.id + ' does not exist.'));
+     requestUtil.unifiedErrorResponse(context.opts.req,
+         'Failed to delete record.',
+         'The record with id ' + context.opts.id + ' does not exist.',
+         requestUtil.httpcode.NOT_FOUND, context.opts.res);
+   })
+   // fault catch
+   .fail(function(error) {
+      context.fault = error;
+      var errorCode = context.fault.errorCode;
+      if (! errorCode) {
+        errorCode = requestUtil.httpcode.INTERNAL_ERROR;
+      }
+      var errorMsg = (context.fault.reason) ? context.fault.reason : 'Failed to delete record';
+      var details = (context.fault.details) ? context.fault.details : context.fault;
+      requestUtil.unifiedErrorResponse(context.opts.req,
+            errorMsg,
+            details,
+            errorCode, 
+            context.opts.res
+      );
+   });
+  } catch (error) {
+    context.fault = error;
+    var errorCode = context.fault.errorCode;
+    if (! errorCode) {
+      errorCode = requestUtil.httpcode.INTERNAL_ERROR;
+    }
+    var errorMsg = (context.fault.reason) ? context.fault.reason : 'Failed to delete record';
+    var details = (context.fault.details) ? context.fault.details : context.fault;
+    logger.error('[' + {{&routeClassName}}.deleteBy{{&methodSignature}}_method_qname + '] Exit(failed): ', context.fault);
+    requestUtil.unifiedErrorResponse(context.opts.req,
+            errorMsg,
+            details,
+            errorCode, 
+            context.opts.res
+        );
+  }
+};

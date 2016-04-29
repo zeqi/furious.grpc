@@ -1,0 +1,137 @@
+
+//======================================
+//     {{&routeClassName}}.create
+//======================================
+
+{{&routeClassName}}.create_method_qname = '{{&routeClassName}}.create';
+
+/**
+ * The target DAO invoker of creating a new {{&moduleName}}.
+ * @param {object} context, the context data structure is as below:
+ *   {
+ *      targetFnQName: <string>, 
+ *      opts: <object>, 
+ *      result: <object>
+ *      fault: <Error>
+ *   }
+  * @private
+  */
+ {{&routeClassName}}.prototype._create = function(context) {
+     var method = '_create';
+     try {
+       var req = context.opts.req;
+       var res = context.opts.res;
+
+       var record = req.body;
+       logger.debug(method, ">>>", record);
+
+       return dao.createRecord(record).then(function(result) {
+          context.result = result;
+          return context;
+       }).fail(function(error) {
+        context.fault = error;
+        return context;
+       });
+     } catch (error) {
+      logger.error('Error occurs during DAO call: ', error);
+      context.fault = error;
+      return Q(context);
+     }
+     
+ };
+
+/**
+ * Create a new {{&moduleName}}.
+ * {{#annotations}}
+ * {{{.}}}
+ * {{/annotations}}
+ */
+{{&routeClassName}}.prototype.create = function(req, res) {
+  var context = {
+    targetFnQName: {{&routeClassName}}.create_method_qname,
+    opts: {
+      req: req,
+      res: res
+    },
+    result: null,
+    fault: null
+  };
+  var self = this;
+  try {
+    var preHookChainInvoker = new PreHookChainInvoker(context);
+    var postHookChainInvoker = new PostHookChainInvoker(context);
+
+    logger.debug('[' + {{&routeClassName}}.create_method_qname + '] Enter');
+    // preHook call
+    preHookChainInvoker.invoke()
+    // DAO call
+    .then(function(context) {
+      if (context.fault) {
+        return context;
+      }
+      return self._create(context);
+    })
+    // postHook call
+    .then(function(context) {
+      if (context.fault) {
+        return context;
+      }
+      return postHookChainInvoker.invoke();
+    })
+    // API response 
+    .then(function(context) {
+      if (context.fault) {
+        logger.error('[' + {{&routeClassName}}.create_method_qname + '] Exit(failed): ', context.fault);
+        var errorCode = context.fault.errorCode;
+        if (! errorCode) {
+          errorCode = requestUtil.httpcode.INTERNAL_ERROR;
+        }
+        var errorMsg = (context.fault.reason) ? context.fault.reason : 'Failed to create record';
+        var details = (context.fault.details) ? context.fault.details : context.fault;
+
+        requestUtil.unifiedErrorResponse(context.opts.req,
+             errorMsg,
+             details,
+             errorCode,
+             context.opts.res);
+        return;
+       }
+
+       requestUtil.jsonResponse(context.result, context.opts.res, requestUtil.httpcode.CREATED);
+       logger.debug('[' + {{&routeClassName}}.create_method_qname + '] Exit(sucessed): ', context.result);
+    })
+    // fault catch
+    .fail(function (error) {
+      context.fault = error;
+      logger.error('[' + {{&routeClassName}}.create_method_qname + '] Exit(failed): ', context.fault);
+      var errorCode = context.fault.errorCode;
+      if (! errorCode) {
+        errorCode = requestUtil.httpcode.INTERNAL_ERROR;
+      }
+      var errorMsg = (context.fault.reason) ? context.fault.reason : 'Failed to create record';
+      var details = (context.fault.details) ? context.fault.details : context.fault;
+      requestUtil.unifiedErrorResponse(context.opts.req,
+             errorMsg,
+             details,
+             errorCode,
+             context.opts.res);
+      return context;
+    });
+  } catch (error) {
+    context.fault = error;
+    logger.error('[' + {{&routeClassName}}.create_method_qname + '] Exit(failed): ', context.fault);
+    var errorCode = context.fault.errorCode;
+    if (! errorCode) {
+      errorCode = requestUtil.httpcode.INTERNAL_ERROR;
+    }
+    var errorMsg = (context.fault.reason) ? context.fault.reason : 'Failed to create record';
+    var details = (context.fault.details) ? context.fault.details : context.fault;
+    requestUtil.unifiedErrorResponse(context.opts.req,
+             errorMsg,
+             details,
+             errorCode,
+             context.opts.res);
+    return context;
+  }
+  
+};

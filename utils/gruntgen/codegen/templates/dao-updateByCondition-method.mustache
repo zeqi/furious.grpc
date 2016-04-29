@@ -1,0 +1,52 @@
+
+/**
+ * Update record(s) by conditions, support both promise and callback invocation styles
+ *
+ * @function
+ * @param {object}, conditions, the conditions to specify a records scope
+ * @param {Object}, update operation expression, supported mongo operators includes $set, $inc, $pull, $push
+ * @param {object}, options, e.g: $multi   
+ * @param {fn}, callback, optional
+ * @return {Promise} promise to perform a update action:
+ * <li>record found and updated: resolve with the updated record
+ * <li>record NOT found: reject with null
+ * <li>error occur during find and update: reject with the error causing failure
+ *
+ */
+{{&daoClassName}}.prototype.updateByCondition = function (condition, update, options, callback) {
+
+  var method = 'updateByCondition';
+
+  if (options && 'function' === typeof options) {
+    callback = options;
+    options = null; 
+  }
+
+  if (! options) {
+    options = {};
+  }
+
+  logger.debug(method, '[Enter]', condition, update, options);
+
+  var self = this;
+
+  return Q.Promise(function (resolve, reject) {
+    {{&modelName}}().update(condition, update, options).lean().exec(function (err, result) {
+      if (err) {
+        logger.error(method, '[Exit](failed)', err);
+        return reject(err);
+      }
+
+      if (! result) {
+        logger.debug(method, '[Exit](failed)', 'Invalid operation ack value: ', result);
+        return reject(new Error('Invalid operation ack value'));
+      }
+
+      logger.debug(method, '[Exit](succeed)', result);
+      resolve(result);
+      {{#isCacheable}}
+      self.emit({{&daoClassName}}.UPDATE_EVENT, result);
+      {{/isCacheable}}
+    });
+  }).nodeify(callback);
+};

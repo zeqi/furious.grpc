@@ -1,0 +1,43 @@
+ /**
+ * Route class for {{&moduleName}}
+ * {{&route-desc}}
+ * @module routes/{{&moduleName}}
+ * @auto-gen
+ *
+ * Note: auto-gen code, NOT allowed to modify
+ */
+
+var dao                  = require('../persistence/dao/{{&moduleName}}');
+var requestUtil          = require('../utils/requestUtil');
+var logger               = require('../utils/logger').getLogger('routes/{{&moduleName}}');
+var PreHookChainInvoker  = require('./apiHook/preHookChainInvoker');
+var PostHookChainInvoker = require('./apiHook/postHookChainInvoker');
+var querystring          = require('querystring');
+
+var {{&routeClassName}} = function() {
+
+};
+
+{{#RestfulCreateMethodGen}}
+  {{> router-create-method}}
+{{/RestfulCreateMethodGen}}
+
+{{#RestfulDeleteByKeyMethods}}
+  {{> router-delByKey-method}}
+{{/RestfulDeleteByKeyMethods}}
+
+{{#RestfulGetByKeyMethods}}
+  {{> router-getByKey-method}}
+{{/RestfulGetByKeyMethods}}
+
+{{#RestfulGetByConditionMethodGen}}
+  {{> router-getByCondition-method}}
+{{/RestfulGetByConditionMethodGen}}
+
+{{#RestfulUpdateByKeyMethods}}
+  {{> router-updateByKey-method}}
+{{/RestfulUpdateByKeyMethods}}
+
+
+// var router = new {{&routeClassName}}();
+module.exports = exports = {{&routeClassName}};

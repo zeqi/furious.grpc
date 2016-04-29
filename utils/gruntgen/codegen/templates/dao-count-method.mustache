@@ -1,0 +1,47 @@
+
+/**
+ * Counts number of matching documents in database collection
+ *
+ * @function
+ * @param {object} condition, expressed by JSON format
+ * @param {object} opts, optional parameter, including the properties like "limit" and "skip"
+ * @param {fn}, callback, optional parameter
+ * @return {Promise} promise to perform a find action:
+ * <li>record found: resolve with the found record
+ * <li>record NOT found: resolve with undefine
+ * <li>error occur during find: reject with the error
+ *
+ */
+{{&daoClassName}}.prototype.count = function (condition, callback) {
+  var method = 'count';
+  logger.debug(method, '[Begin]', condition);
+  var self = this;
+  
+  if (condition && 'function' === typeof condition) {
+    callback = condition;
+    condition = null;
+  }
+
+  if (! condition) {
+    condition = {};
+  }
+
+  return Q.Promise(function (resolve, reject) {
+    {{&modelName}}().count(condition, function (err, count) {
+      if (err) {
+        logger.error(method , '[End](failed)', err);
+        reject(err);
+        return;
+      }
+
+      if (count) {
+        logger.debug(method, '[End](succeed) ', count);
+        resolve(count);
+        return;
+      }
+
+      logger.debug(method, '[End](warning)', count);
+      resolve();
+    });
+  }).nodeify(callback);
+};

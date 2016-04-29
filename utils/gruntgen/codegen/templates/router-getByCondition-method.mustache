@@ -1,0 +1,323 @@
+
+//======================================
+//     {{&routeClassName}}.getByCondition
+//======================================
+
+{{&routeClassName}}.getByCondition_method_qname = '{{&routeClassName}}.getByCondition';
+
+
+/**
+* Parse the query object and normalize the query string into condition and filter 
+* @param {object} query, query object, we support nested complex objects
+* @return {object} normalized query object, the data structure is as below:
+* {
+*   condition: <object>,
+*   filter: <object>
+* }
+* @private
+*/
+{{&routeClassName}}.prototype._regExpGen = function(query) { 
+	 var self = this;
+   if (! query) return query;
+
+	 if ('object' === typeof query) {
+		 Object.keys(query).forEach(function(key) {
+       if ('string'  === typeof query[key]) {
+				  var value = query[key];
+					if (value && value.length > 1 && '/' === value.charAt(0) && '/' === value.charAt(value.length - 1)) {
+						query[key] = {
+							'$regex': value.substr(1, value.length -2),
+							'$options': 'si'
+						};
+					} 
+					return;
+			 }
+			 self._regExpGen(query[key]);
+		 });
+		 return;
+	 }
+
+	 if (Array.isArray(query)) {
+		for (var i =0; i < query.length; i++ ){
+	     var value = query[i];
+       if ('string' === typeof value) {
+					if (value && value.length > 1 && '/' === value.charAt(0) && '/' === value.charAt(value.length - 1)) {
+						query[i] = {
+							'$regex': value.substr(1, value.length -2),
+							'$options': 'si'
+						};
+					} 
+					continue;
+			 }
+      self._regExpGen(query[i]);
+		}
+		return;
+	 }
+};
+
+/**
+* Parse the query object and normalize the query string into condition and filter 
+* @param {object} query, query object, we support nested complex objects
+* @return {object} normalized query object, the data structure is as below:
+* {
+*   condition: <object>,
+*   filter: <object>
+* }
+* @private
+*/
+{{&routeClassName}}.prototype._queryNormalize = function(query, condition, filter) {
+	var self = this;
+	if (! condition) {
+     condition = {};		
+	}
+	if (! filter) {
+    filter = {};		
+	}
+	var result = {condition: condition, filter: filter};
+	filter.skip = 0;
+	filter.limit = 10;
+	filter.sort = {};
+  
+	if (! query || '' === query) return result;
+	
+	Object.keys(query).forEach(function(key) {
+		switch(key){
+			case 'skip':
+				filter.skip = query.skip;
+				delete query.skip;
+				break;
+			case 'limit':
+				filter.limit = query.limit;
+				if (query.limit === 'unlimited') {
+				  filter.limit = undefined;	
+				}
+				delete query.limit;
+				break;
+			case '$sort':
+				filter.sort = query['$sort'];
+				delete query['$sort'];
+				if (! filter.sort || '' === filter.sort.trim()) {
+					filter.sort = {};
+					break;
+				}
+				filter.sort = querystring.parse(decodeURIComponent(filter.sort));
+				break;
+			default:
+				var value = (query[key]) ? query[key] : '';
+
+				if ('string' === typeof value) {
+					condition[key] = value.trim();
+					if (value && value.length > 1 && '/' === value.charAt(0) && '/' === value.charAt(value.length - 1)) {
+						condition[key] = {
+							'$regex': value.substr(1, value.length -2),
+							'$options': 'si'
+						};
+					}
+					break;
+				}
+			  self._regExpGen(value);	
+				condition[key] = value;
+		}
+	});  
+
+	return result;
+};
+
+/**
+* The target DAO invoker of retrieving {{&moduleName}} by condition.
+* @param {object} context, the context data structure is as below:
+*   {
+*      targetFnQName: <string>, 
+*      opts: <object>, 
+*      result: <object>
+*      fault: <Error>
+*   }
+* @private
+*/
+{{&routeClassName}}.prototype._getByCondition = function(context) {
+  var method = '_getByCondition';
+	var self = this;
+  try {
+    var req = context.opts.req;
+    var res = context.opts.res;
+
+		var queryFilter = self._queryNormalize(req.query);
+
+    var queryOpts = queryFilter.filter;
+    context.opts.queryOpts = queryOpts;
+    context.opts.queryCondition = queryFilter.condition;
+    if (! context.opts.queryCondition) {
+      context.opts.queryCondition = {};
+    }
+
+    logger.debug('Query condition: ', queryFilter.condition);
+    logger.debug('Query options: ', queryFilter.filter);
+    return dao.retrieveByCondition(queryFilter.condition, queryOpts).then(function(results) {
+        context.result = results;
+        return context;
+     }).fail(function(error) {
+      context.fault = error;
+      return context;
+     });
+  } catch(error) {
+    context.fault = error;
+    logger.error('Error occurs during DAO call: ', error);
+    return Q(context);
+  }
+  
+};
+
+/**
+ * Get {{&moduleName}}s by conditions
+ *
+ * {{#annotations}}
+ * {{{.}}}
+ * {{/annotations}}
+ *
+ */
+{{&routeClassName}}.prototype.getByCondition = function (req, res) {
+  var context = {
+       targetFnQName: {{&routeClassName}}.getByCondition_method_qname,
+       opts: {
+           req: req,
+           res: res
+       },
+       result: null,
+       fault: null
+  };
+  var self = this;
+  try {
+    var preHookChainInvoker = new PreHookChainInvoker(context);
+    var postHookChainInvoker = new PostHookChainInvoker(context);
+
+    logger.debug('[' + {{&routeClassName}}.getByCondition_method_qname + '] Enter');
+    // preHook call
+    preHookChainInvoker.invoke()
+    // DAO call
+    .then(function(context) {
+      if (context.fault) {
+        return context;
+      }
+      return self._getByCondition(context);
+    })
+    // postHook call
+    .then(function(context) {
+      if (context.fault) {
+        return context;
+      }
+      return postHookChainInvoker.invoke();
+    })
+    // response
+    .then(function(context) {
+      if (context.fault) {
+        var errorCode = context.fault.errorCode;
+        if (! errorCode) {
+          errorCode = requestUtil.httpcode.INTERNAL_ERROR;
+        }
+        var errorMsg = (context.fault.reason) ? context.fault.reason : 'Failed to retrieve records by condition.';
+        var details = (context.fault.details) ? context.fault.details : context.fault;
+        logger.error('[' + {{&routeClassName}}.getByCondition_method_qname + '] Exit(failed): ', context.fault);
+        requestUtil.unifiedErrorResponse(context.opts.req,
+           errorMsg,
+           details,
+           errorCode, 
+           context.opts.res
+        );
+        return;
+      }
+     return dao.count(context.opts.queryCondition, function(error, count) {
+      if (error) {
+        context.fault = error;
+        var errorCode = context.fault.errorCode;
+        if (! errorCode) {
+          errorCode = requestUtil.httpcode.INTERNAL_ERROR;
+        }
+        var errorMsg = (context.fault.reason) ? context.fault.reason : 'Failed to get document count by condition.';
+        var details = (context.fault.details) ? context.fault.details : context.fault;
+        logger.error('[' + {{&routeClassName}}.getByCondition_method_qname + '] Exit(failed): ', context.fault);
+        requestUtil.unifiedErrorResponse(context.opts.req,
+           errorMsg,
+           details,
+           errorCode, 
+           context.opts.res
+        );
+        return;
+      }
+
+      var skip = null;
+      var limit = null;
+      try {
+        skip = parseInt(context.opts.queryOpts.skip);
+      } catch (err) {
+        skip = context.opts.queryOpts.skip;
+      }
+      try {
+        limit = parseInt(context.opts.queryOpts.limit);
+      } catch (err) {
+        limit = context.opts.queryOpts.limit;
+      }
+      
+      if (! skip) {
+        skip = 0;
+      }
+
+      if (! limit || limit === 'unlimited') {
+         limit = 'all';
+      }
+
+      if (! count) {
+        count = '*';
+      }
+
+      if ('number' === typeof limit && 'number' === typeof count && limit >= count) {
+        limit = count;
+      }
+
+      var httpRespCode = requestUtil.httpcode.PARTIAL_CONTENT;
+      if (skip === 0 && limit === count) {
+        httpRespCode = requestUtil.httpcode.OK;
+      }
+
+      var contentRangeHeader = 'items ' + (skip + 1) + '-' + ((limit !=='all') ? (skip + limit) : 'all') + '/' + count;
+      context.opts.res.set('Content-Range', contentRangeHeader);
+      logger.debug('Response http content-range header: ', contentRangeHeader);
+
+      requestUtil.jsonResponse(context.result, context.opts.res, httpRespCode);
+      logger.debug('[' + {{&routeClassName}}.getByCondition_method_qname + '] Exit(sucessed): ', context.result);
+     });
+     
+    })
+    // fault catch
+    .fail(function(error) {
+      context.fault = error;
+      var errorCode = context.fault.errorCode;
+        if (! errorCode) {
+          errorCode = requestUtil.httpcode.INTERNAL_ERROR;
+        }
+        var errorMsg = (context.fault.reason) ? context.fault.reason : 'Failed to retrieve records by condition.';
+        var details = (context.fault.details) ? context.fault.details : context.fault;
+      logger.error('[' + {{&routeClassName}}.getByCondition_method_qname + '] Exit(failed): ', context.fault);
+      requestUtil.unifiedErrorResponse(context.opts.req,
+           errorMsg,
+            details,
+            errorCode, 
+            context.opts.res
+        );
+    });
+  } catch (error) {
+    context.fault = error;
+    var errorCode = context.fault.errorCode;
+        if (! errorCode) {
+          errorCode = requestUtil.httpcode.INTERNAL_ERROR;
+        }
+        var errorMsg = (context.fault.reason) ? context.fault.reason : 'Failed to retrieve records by condition.';
+        var details = (context.fault.details) ? context.fault.details : context.fault;
+    logger.error('[' + {{&routeClassName}}.getByCondition_method_qname + '] Exit(failed): ', context.fault);
+    requestUtil.unifiedErrorResponse(context.opts.req,
+           errorMsg,
+            details,
+            errorCode, 
+            context.opts.res
+        );
+  }
+};

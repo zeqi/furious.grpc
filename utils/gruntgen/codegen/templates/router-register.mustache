@@ -1,0 +1,51 @@
+/**
+* Persistence API for {{&moduleName}}
+* API for e-commerce {{&moduleName}}.
+* @module register/{{&moduleName}}
+* @auto-gen
+*
+* Note: auto-gen code, NOT allowed to modify
+*/
+
+var Permission = require('../../services/permission').Permission;
+var logger               = require('../../utils/logger').getLogger('routes/apiRegister/{{&moduleName}}');
+
+var {{&routeClassName}}  = require('../../routes/{{&moduleName}}');
+var {{&moduleName}}      = new {{&routeClassName}}();
+
+//=========================
+//      {{&moduleName}} Apis
+//=========================
+var AutoAPI = function (router, _createProxy) {
+    {{#basePath}}
+        {{#RestfulCreateMethodGen}}
+            // Create a new {{&moduleName}}.
+            router.post('/{{&basePath}}', _createProxy({{&moduleName}}.create.bind({{&moduleName}}), {name: '{{&moduleName}}.create', role: Permission.EVERYONE}));
+        {{/RestfulCreateMethodGen}}
+
+        {{#RestfulGetByConditionMethodGen}}
+            // Get all {{&moduleName}}.
+            router.get('/{{&basePath}}', _createProxy({{&moduleName}}.getByCondition.bind({{&moduleName}}), {name: '{{&moduleName}}.getByCondition', role: Permission.EVERYONE}));
+        {{/RestfulGetByConditionMethodGen}}
+
+        {{#RestfulGetByKeyMethods}}
+            // Get one {{&moduleName}} by id.
+            router.get('/{{&basePath}}/{{&getNormalizePath}}:{{&paramName}}', _createProxy({{&moduleName}}.getBy{{&methodSignature}}.bind({{&moduleName}}), {name: '{{&moduleName}}.getBy{{&methodSignature}}', role: Permission.EVERYONE}));
+        {{/RestfulGetByKeyMethods}}
+
+        {{#RestfulUpdateByKeyMethods}}
+            // Update one {{&moduleName}} by id.
+            router.put('/{{&basePath}}/{{&getNormalizePath}}:{{&paramName}}', _createProxy({{&moduleName}}.updateBy{{&methodSignature}}.bind({{&moduleName}}), {name: '{{&moduleName}}.updateBy{{&methodSignature}}', role: Permission.EVERYONE}));
+        {{/RestfulUpdateByKeyMethods}}
+
+        {{#RestfulDeleteByKeyMethods}}
+            // Delete one {{&moduleName}} by id.
+            router.delete('/{{&basePath}}/{{&getNormalizePath}}:{{&paramName}}', _createProxy({{&moduleName}}.deleteBy{{&methodSignature}}.bind({{&moduleName}}), {name: '{{&moduleName}}.deleteBy{{&methodSignature}}', role: Permission.EVERYONE}));
+        {{/RestfulDeleteByKeyMethods}}
+
+    {{/basePath}}
+
+
+}
+
+module.exports = exports = AutoAPI;

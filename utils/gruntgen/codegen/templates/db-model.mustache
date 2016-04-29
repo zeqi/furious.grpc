@@ -1,0 +1,70 @@
+/**
+ * Persistence model for {{&modelName}}
+ * {{&schema-desc}}
+ * @module persistence/model/{{&moduleName}}
+ * @auto-gen
+ *
+ * Note: auto-gen code, NOT allowed to modify
+ */
+var mongoose        = require('mongoose');
+var MongoDS         = require('nonghe.common').MongoDS;
+var dsRegistry      = require('nonghe.common').DSRegistry.INSTANCE;
+var logger          = require('../../utils/logger').getLogger('persistence/mode/{{&moduleName}}');
+
+var Schema = mongoose.Schema;
+var DATA_SOURCE_NAME = '{{&dataSourceName}}';
+
+//================================
+//       Schema Part 
+//================================
+
+/**
+ * Schema definition of {{&schemaName}}
+ */
+var {{&schemaName}} = new Schema({
+
+{{#schema}}
+/**
+ * Property definition - {{&name}}
+ * {{description}} 
+ *
+ * @{{#required}}required{{/required}}{{^required}}optional{{/required}}
+ * @type {{=<% %>=}}{<%&getDataType%>}<%={{ }}=%>
+ *
+ */
+
+  {{name}}: {{&getDataType}}{{#comma}},{{/comma}}
+
+{{/schema}}
+
+}
+{{#collectionName}}
+, { collection: '{{&collectionName}}'}
+{{/collectionName}}
+);
+
+//================================
+//       Index part 
+//================================
+
+{{#index}}
+  {{&schemaName}}.index({{&fields}}, {{&options}});
+{{/index}}
+
+//================================
+//       Getter of mongoose model
+//================================
+
+var getModel = function () {
+  var ds = dsRegistry.getDS(DATA_SOURCE_NAME);
+  var conn = ds.getConnection();
+  if (! conn || conn.readyState !== 1) {
+    logger.debug('Invalid mongoose connection status: ', ((conn) ? conn.readyState  : null));	
+	}
+	return conn.model('{{&modelName}}', {{&schemaName}});
+};
+
+// export getter function
+// enable lazy db connection mode and by turn realize
+// auto-reconnect
+module.exports = getModel;
