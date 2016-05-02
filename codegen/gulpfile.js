@@ -3,14 +3,29 @@
  */
 
 var gulp = require('gulp');
-var del = require('del');
+var uglify = require('gulp-uglify');
+var concat = require('gulp-concat');
+var clean = require('gulp-clean');
+var model = require('./task/model');
 
 var option = {
+    build: ['build/*'],
+    definition: ['definition/*.js']
+}
 
+var template = {
+    mongoose_schema:'mongoose-schema.mustache'
 }
 
 gulp.task('clear', function () {
-    return del(['build']);
+    return gulp.src(option.build)
+        .pipe(clean());
 });
 
-gulp.task('default', ['clear']);
+gulp.task('model', function () {
+    return gulp.src(option.definition)
+        .pipe(model({template:'template/mongoose-schema.mustache'}))
+        .pipe(gulp.dest('build'));
+})
+
+gulp.task('default', ['clear', 'model']);

@@ -53,13 +53,12 @@ message Res_Docs_count {
 }
 
 
-
 message Id {
-  optional string id = 1;
+    optional string id = 1;
 }
 
 message Name {
-  optional string name = 1;
+    optional string name = 1;
 }
 
 message Req_Default {
@@ -68,11 +67,16 @@ message Req_Default {
 
 // The user service definition.
 service User {
-  rpc save (Req_Doc) returns (Res_Doc) {}
-  rpc create (Req_Docs) returns (Res_Docs) {}
-  rpc find (Req_Default) returns (Res_Docs_count) {}
-  rpc findById (Id) returns(Res_Doc){}
-  rpc findByName (Name) returns (Res_Docs) {}
+    rpc save (Req_Doc) returns (Res_Doc) {
+    }
+    rpc create (Req_Docs) returns (Res_Docs) {
+    }
+    rpc find (Req_Default) returns (Res_Docs_count) {
+    }
+    rpc findById (Id) returns (Res_Doc) {
+    }
+    rpc findByName (Name) returns (Res_Docs) {
+    }
 }
 
 extend Res {

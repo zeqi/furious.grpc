@@ -69,6 +69,37 @@ class Base {
         }).nodeify(callback);
     }
 
+    findDefine(condition, pageIndex, pageSize, sort) {
+        var method = 'findDefine';
+        var self = this;
+        if (!condition) {
+            condition = {};
+        }
+        var task = self.model.find(condition);
+        if (validate.isNumber(pageIndex)) {
+            if (!validate.isNumber(pageSize)) {
+                pageSize = self.customPageSize;
+            }
+            var startLine = (pageIndex - 1) * pageSize
+            task.limit(pageSize).skip(startLine);
+        }
+        if (validate.isObject(sort)) {
+            task.sort(sort);
+        }
+
+        return task;
+    }
+
+    countDefine(condition) {
+        var method = 'countDefine';
+        var self = this;
+        if (!condition) {
+            condition = {};
+        }
+        var task = self.model.count(condition);
+        return task;
+    }
+
     save(data, callback) {
         if (Array.isArray(data)) {
             return this.create(data, callback);
@@ -105,27 +136,6 @@ class Base {
                 }
             });
         }).nodeify(callback);
-    }
-
-    findDefine(condition, pageIndex, pageSize, sort) {
-        var method = 'findDefine';
-        var self = this;
-        if (!condition) {
-            condition = {};
-        }
-        var task = self.model.find(condition);
-        if (validate.isNumber(pageIndex)) {
-            if (!validate.isNumber(pageSize)) {
-                pageSize = self.customPageSize;
-            }
-            var startLine = (pageIndex - 1) * pageSize
-            task.limit(pageSize).skip(startLine);
-        }
-        if (validate.isObject(sort)) {
-            task.sort(sort);
-        }
-
-        return task;
     }
 
     find(condition, pageIndex, pageSize, sort, callback) {
@@ -165,20 +175,6 @@ class Base {
                 count: 0
             }
         }).nodeify(callback);
-
-        /*        return Q.all([self.findDefine(condition, pageIndex, pageSize, sort), self.countDefine(condition)]).then(function (result) {
-         logger.debug(self.method, 'Result:\n', result);
-         if (result && result.length == 2) {
-         return {
-         list: result[0],
-         count: result[1]
-         }
-         }
-         return {
-         list: [],
-         count: 0
-         }
-         }).nodeify(callback);*/
     }
 
     findAll(callback) {
@@ -194,7 +190,7 @@ class Base {
         if (!id) {
             return Q.reject(self.paramError(id)).nodeify(callback);
         }
-        var task = self.model.findById  (id);
+        var task = self.model.findById(id);
         return self.execTask(task, callback).nodeify(callback);
     }
 
@@ -222,16 +218,6 @@ class Base {
         return self.execTask(task, callback).nodeify(callback);
     }
 
-    countDefine(condition) {
-        var method = 'countDefine';
-        var self = this;
-        if (!condition) {
-            condition = {};
-        }
-        var task = self.model.count(condition);
-        return task;
-    }
-
     count(condition, callback) {
         this.method = 'count';
         var self = this;
@@ -239,13 +225,17 @@ class Base {
         return self.execTask(task, callback, self.method).nodeify(callback);
     }
 
-    update(condition, callback) {
+    update(condition, update, options, callback) {
         this.method = 'update';
         var self = this;
+
         if (!condition) {
-            Q.reject(self.paramError(condition)).nodeify(callback);
+            condition = {};
         }
-        var task = self.model.update(condition);
+        if (!update) {
+            Q.reject(self.paramError(update)).nodeify(callback);
+        }
+        var task = self.model.update(condition, update, options);
         return self.execTask(task, callback).nodeify(callback);
     }
 
