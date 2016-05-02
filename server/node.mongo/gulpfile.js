@@ -16,7 +16,7 @@ var option = {
 var template = {
     mongoose_schema: '../../codegen/template/mongoose-schema.mustache',
     mongoose_dao: '../../codegen/template/mongoose-dao.mustache',
-    business:'../../codegen/template/business.mustache'
+    business: '../../codegen/template/business.mustache'
 }
 
 gulp.task('clear', function () {
@@ -42,4 +42,4 @@ gulp.task('business', function () {
         .pipe(gulp.dest('business/'));
 });
 
-gulp.task('default', ['clear', 'model', 'dao','business']);
+gulp.task('default', ['clear', 'model', 'dao', 'business']);
