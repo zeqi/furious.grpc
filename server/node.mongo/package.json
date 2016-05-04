@@ -8,10 +8,6 @@
   "dependencies": {
     "debug": "~2.2.0",
     "grpc": "^0.13.2-pre1",
-    "log4js": "^0.6.33",
-    "mongoose": "^4.4.11",
-    "q": "^1.4.1",
-    "serve-favicon": "~2.3.0",
     "gulp": "^3.9.1",
     "gulp-clean": "^0.3.2",
     "gulp-compass": "^2.1.0",
@@ -19,6 +15,11 @@
     "gulp-sass": "^2.3.1",
     "gulp-uglify": "^1.5.3",
     "js-beautify": "^1.6.2",
-    "mustache": "^2.2.1"
+    "log4js": "^0.6.33",
+    "mongoose": "^4.4.11",
+    "mustache": "^2.2.1",
+    "q": "^1.4.1",
+    "serve-favicon": "~2.3.0",
+    "through2": "^2.0.1"
   }
 }
