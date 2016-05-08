@@ -113,7 +113,6 @@ service User {
     rpc remove (Req_Condition) returns (Res_Docs) {};
     rpc findByIdAndRemove (Req_Id_options) returns (Res_Doc) {};
     rpc findByName (Name) returns (Res_Docs) {};
-
 }
 
 extend Res {
