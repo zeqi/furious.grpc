@@ -26,6 +26,34 @@ message Req_Docs {
     repeated Req_Doc docs = 1;
 }
 
+message Req_Condition {
+    optional string condition = 1;
+}
+
+message Req_Condition_page_sort {
+    optional string condition = 1;
+    optional int32 pageIndex = 2;
+    optional int32 pageSize = 3;
+    optional string sort = 4;
+}
+
+message Req_Condition_update_options {
+    optional string condition = 1;
+    optional string update = 2;
+    optional string options = 3;
+}
+
+message Req_Id_update_options {
+    optional string id = 1;
+    optional string update = 2;
+    optional string options = 3;
+}
+
+message Req_Id_options {
+    optional string id = 1;
+    optional string options = 2;
+}
+
 message Res_Doc {
     optional int32 status = 1;
     optional int32 code = 2;
@@ -40,16 +68,22 @@ message Res_Docs {
     repeated DocModel data = 4;
 }
 
-message Docs_Count {
+message Docs_List_count {
     optional int32 count = 1;
     repeated DocModel list = 2;
 }
 
+message Res_Docs_list_count {
+    optional int32 status = 1;
+    optional int32 code = 2;
+    optional string msg = 3;
+    optional Docs_List_count data = 4;
+}
 message Res_Docs_count {
     optional int32 status = 1;
     optional int32 code = 2;
     optional string msg = 3;
-    optional Docs_Count data = 4;
+    optional int32 data = 4;
 }
 
 
@@ -67,16 +101,18 @@ message Req_Default {
 
 // The user service definition.
 service User {
-    rpc save (Req_Doc) returns (Res_Doc) {
-    }
-    rpc create (Req_Docs) returns (Res_Docs) {
-    }
-    rpc find (Req_Default) returns (Res_Docs_count) {
-    }
-    rpc findById (Id) returns (Res_Doc) {
-    }
-    rpc findByName (Name) returns (Res_Docs) {
-    }
+    rpc save (Req_Doc) returns (Res_Doc) {};
+    rpc create (Req_Docs) returns (Res_Docs) {};
+    rpc find (Req_Condition_page_sort) returns (Res_Docs) {};
+    rpc findById (Id) returns (Res_Doc) {};
+    rpc findOne (Req_Condition) returns (Res_Docs) {};
+    rpc findListAndCount (Req_Condition_page_sort) returns (Res_Docs_list_count) {};
+    rpc count (Req_Condition) returns (Res_Docs_count) {};
+    rpc update (Req_Condition_update_options) returns (Res_Docs) {};
+    rpc findByIdAndUpdate (Req_Id_update_options) returns (Res_Doc) {};
+    rpc remove (Req_Condition) returns (Res_Docs) {};
+    rpc findByIdAndRemove (Req_Id_options) returns (Res_Doc) {};
+    rpc findByName (Name) returns (Res_Docs) {};
 }
 
 extend Res {

@@ -73,5 +73,10 @@ module.exports = {
     //  Dao info
     //========================
     daoName: 'UserDao',
-    dao_desc:'According to the module definition, Create a module dao for the module '
+    dao_desc: 'According to the module definition, Create a module dao for the module ',
+
+    //========================
+    //  Interface info
+    //========================
+    serviceName: 'User'
 }

@@ -6,7 +6,7 @@ var userApi = user.Api;
 
 /* GET users listing. */
 router.get('/', function (req, res, next) {
-    userApi.find({}, function (err, response) {b   
+    userApi.find({}, function (err, response) {
         console.log(err);
         console.log(response);
         res.send(response);

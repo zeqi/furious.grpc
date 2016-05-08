@@ -204,7 +204,7 @@ class Base {
         return self.execTask(task, callback).nodeify(callback);
     }
 
-    findByIdAndUpdate(id, update, callback) {
+    findByIdAndUpdate(id, update, options, callback) {
         this.method = 'findByIdAndUpdate';
         var self = this;
         if (!id) {
@@ -214,7 +214,7 @@ class Base {
             return Q.reject(self.paramError(update)).nodeify(callback);
         }
 
-        var task = self.model.findByIdAndUpdate(id, update);
+        var task = self.model.findByIdAndUpdate(id, update, options);
         return self.execTask(task, callback).nodeify(callback);
     }
 
@@ -230,7 +230,7 @@ class Base {
         var self = this;
 
         if (!condition) {
-            condition = {};
+            Q.reject(self.paramError(condition)).nodeify(callback);
         }
         if (!update) {
             Q.reject(self.paramError(update)).nodeify(callback);
@@ -245,6 +245,9 @@ class Base {
         if (!condition) {
             Q.reject(self.paramError(condition)).nodeify(callback);
         }
+        if (!update) {
+            Q.reject(self.paramError(update)).nodeify(callback);
+        }
         var task = self.model.findOneAndUpdate(condition, update, options);
         return self.execTask(task, callback).nodeify(callback);
     }
@@ -256,6 +259,19 @@ class Base {
             Q.reject(self.paramError(condition)).nodeify(callback);
         }
         var task = self.model.remove(condition);
+        return self.execTask(task, callback).nodeify(callback);
+    }
+
+    findByIdAndRemove(id, options, callback) {
+        this.method = 'findByIdAndRemove';
+        var self = this;
+        if (!id) {
+            Q.reject(self.paramError(id)).nodeify(callback);
+        }
+        if (!options) {
+            options = {}
+        }
+        var task = self.model.findByIdAndRemove(id, options);
         return self.execTask(task, callback).nodeify(callback);
     }
 }

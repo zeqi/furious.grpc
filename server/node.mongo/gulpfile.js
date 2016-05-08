@@ -16,7 +16,9 @@ var option = {
 var template = {
     mongoose_schema: '../../codegen/template/mongoose-schema.mustache',
     mongoose_dao: '../../codegen/template/mongoose-dao.mustache',
-    business: '../../codegen/template/business.mustache'
+    business: '../../codegen/template/business.mustache',
+    api: '../../codegen/template/api.mustache',
+    inter: '../../codegen/template/interface.mustache'
 }
 
 gulp.task('clear', function () {
@@ -39,7 +41,19 @@ gulp.task('dao', function () {
 gulp.task('business', function () {
     return gulp.src(option.definition)
         .pipe(generator({template: template.business}))
-        .pipe(gulp.dest('business/'));
+        .pipe(gulp.dest('business/gen/'));
 });
 
-gulp.task('default', ['clear', 'model', 'dao', 'business']);
+gulp.task('api', function () {
+    return gulp.src(option.definition)
+        .pipe(generator({template: template.api}))
+        .pipe(gulp.dest('api/gen/'));
+});
+
+gulp.task('inter', function () {
+    return gulp.src(option.definition)
+        .pipe(generator({template: template.inter}))
+        .pipe(gulp.dest('interface/gen/'));
+});
+
+gulp.task('default', ['clear', 'model', 'dao', 'business', 'api', 'inter']);

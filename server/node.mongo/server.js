@@ -24,7 +24,7 @@ db.once('open', function callback() {
         //          Grpc server interface
         //============================================
 
-        var user = require('./service/user');
+        var user = require('./interface/user');
         server.addProtoService(user.service, user.Interface);
         server.bind('0.0.0.0:50051', grpc.ServerCredentials.createInsecure());
         server.start();

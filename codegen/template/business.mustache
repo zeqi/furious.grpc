@@ -5,130 +5,27 @@
 * Note: auto-gen code, NOT allowed to modify
 */
 
-var {{&moduleName}}Dao = require('../persistence/dao/{{&moduleName}}');
+'use strict'
 
-function Business() {
+var BaseBusiness = require('../base');
+var dao = require('../../persistence/dao/{{&moduleName}}');
 
+class Business extends BaseBusiness {
+    constructor() {
+        super(dao);
+    }
+
+    {{#schema_statics}}
+        {{&name}}({{#conditionParams}}{{#isparam}}{{&name}},{{/isparam}}{{/conditionParams}} callback) {
+            return dao.{{&name}}({{#conditionParams}}{{#isparam}}{{&name}}{{#comma}},{{/comma}}{{/isparam}}{{/conditionParams}}).nodeify(callback);
+        }
+    {{/schema_statics}}
+
+    {{#schena_methods}}
+        {{&name}}({{#conditionParams}}{{#isparam}}{{&name}},{{/isparam}}{{/conditionParams}} callback) {
+            return dao.{{&name}}({{#conditionParams}}{{#isparam}}{{&name}}{{#comma}},{{/comma}}{{/isparam}}{{/conditionParams}}).nodeify(callback);;
+        }
+    {{/schena_methods}}
 }
 
-/**
-*  Create a {{&moduleName}} record
-* @param doc <object>  use object
-* @param callback <function>  call back
-* @returns {*} <promise>  Created {{&moduleName}} object
-*/
-Business.save = function (doc, callback) {
-    return {{&moduleName}}Dao.save(doc).nodeify(callback);
-}
-
-/**
-*  Create a number of {{&moduleName}} record
-* @param docs <object>  {{&moduleName}} object list
-* @param callback function>  call back
-* @returns {*} <promise>  Created {{&moduleName}} object list
-*/
-Business.create = function (docs, callback) {
-    return {{&moduleName}}Dao.create(docs).nodeify(callback);
-}
-
-/**
-*  Get {{&moduleName}}s by params condition
-* @param condition <object>  Containing {{&moduleName}} attributes as condition
-* @param pageIndex <number>  Current page index, default:1
-* @param pageSize <number>  Current page size, default:10
-* @param sort <object>  Used to sort
-* @param callback <function>  call back
-* @returns {*} <promise>  {{&moduleName}} object list
-*/
-Business.find = function (condition, pageIndex, pageSize, sort, callback) {
-    return {{&moduleName}}Dao.find(condition, pageIndex, pageSize, sort).nodeify(callback);
-}
-
-/**
-*  Get a {{&moduleName}} by {{&moduleName}} id
-* @param id <string>  current {{&moduleName}} id
-* @param callback <function>  call back
-* @returns {*} <promise>  {{&moduleName}} object
-*/
-Business.findById = function (id, callback) {
-    return {{&moduleName}}Dao.findById(id).nodeify(callback);
-}
-
-/**
-*  Get a {{&moduleName}} object by current condition
-* @param condition <object>  Containing {{&moduleName}} attributes as condition
-* @param callback <function>  call back
-* @returns {*} <promise>  {{&moduleName}} object
-*/
-Business.findOne = function (condition, callback) {
-    return {{&moduleName}}Dao.findOne(condition).nodeify(callback);
-}
-
-/**
-*  Get {{&moduleName}}s object and {{&moduleName}}s count by params condition
-* @param condition <object>  Containing {{&moduleName}} attributes as condition
-* @param pageIndex <number>  Current page index, default:1
-* @param pageSize <number>  Current page size, default:10
-* @param sort <object>  Used to sort
-* @param callback <function>  call back
-* @returns {*} <promise>  Containing two attributes of the {{&moduleName}} list and count
-*/
-Business.findListAndCount = function (condition, pageIndex, pageSize, sort, callback) {
-    return {{&moduleName}}Dao.findListAndCount(condition, pageIndex, pageSize, sort).nodeify(callback);
-}
-
-/**
-*  Get count by condition
-* @param condition <object>   Containing {{&moduleName}} attributes as condition
-* @param callback <function>  call back
-* @returns {*} <promise>  a number
-*/
-Business.count = function (condition, callback) {
-    return {{&moduleName}}Dao.count(condition).nodeify(callback);
-}
-
-/**
-*  According to the condition update to the records
-* @param condition <object>  Containing {{&moduleName}} attributes as condition
-* @param update <object>  Need to update those properties
-* @param options <object>  Optional condition
-* @param callback <function>  call back
-* @returns {*} <promise>  Object being updated
-*/
-Business.update = function (condition, update, options, callback) {
-    return {{&moduleName}}Dao.update(condition, update, options).nodeify(callback);
-}
-
-/**
-*  Get current prams id find a {{&moduleName}} object and update related attributes
-* @param id <string>  {{&moduleName}} id
-* @param update <object>   Need to update those properties
-* @param callback <function>  call back
-* @returns {*} <promise>  Object being updated
-*/
-Business.findByIdAndUpdate = function (id, update, callback) {
-    return {{&moduleName}}Dao.findByIdAndUpdate(id, update).nodeify(callback);
-}
-
-/**
-*  Delete the corresponding conditions of the {{&moduleName}}
-* @param condition <object>  Containing {{&moduleName}} attributes as condition
-* @param callback <function>  call back
-* @returns {*} Object deleted
-*/
-Business.remove = function (condition, callback) {
-    return {{&moduleName}}Dao.remove(condition).nodeify(callback);
-}
-
-{{#schema_statics}}
-Business.{{&name}} = function ({{#conditionParams}}{{#isparam}}{{&name}},{{/isparam}}{{/conditionParams}} callback) {
-    return {{&moduleName}}Dao.{{&name}}({{#conditionParams}}{{#isparam}}{{&name}}{{#comma}},{{/comma}}{{/isparam}}{{/conditionParams}}).nodeify(callback);
-}
-{{/schema_statics}}
-
-{{#schena_methods}}
-Business.{{&name}} = function ({{#conditionParams}}{{#isparam}}{{&name}},{{/isparam}}{{/conditionParams}} callback) {
-    return {{&moduleName}}Dao.{{&name}}({{#conditionParams}}{{#isparam}}{{&name}}{{#comma}},{{/comma}}{{/isparam}}{{/conditionParams}}).nodeify(callback);;
-}
-{{/schena_methods}}
-module.exports = Business;
+module.exports = new Business();
