@@ -16,16 +16,17 @@ var resCode = require('../../define/resCode');
 
 class Api extends BaseApi {
     constructor() {
-        super(business);
+        super(business,normalize,res,resCode);
     }
 
     {{#schema_statics}}
         {{&name}}(req, callback) {
+            var self = this;
             var request = req.request;
-            return business.{{&name}}({{#conditionParams}}{{#isparam}}request.{{&name}}{{#comma}},{{/comma}}{{/isparam}}{{/conditionParams}}).then(function (data) {
-                return callback(null, new res.OK(normalize(data)));
+            return self.business.{{&name}}({{#conditionParams}}{{#isparam}}request.{{&name}}{{#comma}},{{/comma}}{{/isparam}}{{/conditionParams}}).then(function (data) {
+                return callback(null, new self.res.OK(self.normalize(data)));
             }).fail(function (err) {
-                return callback(null, new res.Error(resCode.res201, err.message));
+                return callback(null, new self.res.Error(self.resCode.res201, err.message));
             });
         }
     {{/schema_statics}}
@@ -33,10 +34,10 @@ class Api extends BaseApi {
     {{#schena_methods}}
         {{&name}}(req, callback) {
             var request = req.request;
-            return business.{{&name}}({{#conditionParams}}{{#isparam}}request.{{&name}}{{#comma}},{{/comma}}{{/isparam}}{{/conditionParams}}).then(function (data) {
-                return callback(null, new res.OK(normalize(data)));
+            return self.business.{{&name}}({{#conditionParams}}{{#isparam}}request.{{&name}}{{#comma}},{{/comma}}{{/isparam}}{{/conditionParams}}).then(function (data) {
+                return callback(null, new self.res.OK(self.normalize(data)));
             }).fail(function (err) {
-                return callback(null, new res.Error(resCode.res201, err.message));
+                return callback(null, new self.res.Error(self.resCode.res201, err.message));
             });
         }
     {{/schena_methods}}

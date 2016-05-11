@@ -16,24 +16,25 @@ var resCode = require('../../define/resCode');
 
 class Api extends BaseApi {
     constructor() {
-        super(business);
+        super(business, normalize, res, resCode);
     }
 
     findByName(req, callback) {
+        var self = this;
         var request = req.request;
-        return business.findByName(request.name).then(function(data) {
-            return callback(null, new res.OK(normalize(data)));
+        return self.business.findByName(request.name).then(function(data) {
+            return callback(null, new self.res.OK(self.normalize(data)));
         }).fail(function(err) {
-            return callback(null, new res.Error(resCode.res201, err.message));
+            return callback(null, new self.res.Error(self.resCode.res201, err.message));
         });
     }
 
     findByStatus(req, callback) {
         var request = req.request;
-        return business.findByStatus(request.status).then(function(data) {
-            return callback(null, new res.OK(normalize(data)));
+        return self.business.findByStatus(request.status).then(function(data) {
+            return callback(null, new self.res.OK(self.normalize(data)));
         }).fail(function(err) {
-            return callback(null, new res.Error(resCode.res201, err.message));
+            return callback(null, new self.res.Error(self.resCode.res201, err.message));
         });
     }
 }
