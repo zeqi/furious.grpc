@@ -11,7 +11,7 @@ var grpc = require('grpc');
 var api = require('../../api/user');
 
 var PROTO_PATH = __dirname + '/../../../../protos/user.proto';
-var proto = grpc.load(PROTO_PATH).node_mongo;
+var proto = grpc.load(PROTO_PATH);
 
 var BaseInterface = require('../base');
 

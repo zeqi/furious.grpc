@@ -4,7 +4,7 @@ import "comm.proto";
 
 //option java_package = "com.google.apps.jspb.proto";
 //option java_multiple_files = true;
-package node_mongo;
+//package node_mongo;
 
 message DocModel {
     optional string _id = 1;
@@ -84,19 +84,6 @@ message Res_Docs_count {
     optional int32 code = 2;
     optional string msg = 3;
     optional int32 data = 4;
-}
-
-
-message Id {
-    optional string id = 1;
-}
-
-message Name {
-    optional string name = 1;
-}
-
-message Req_Default {
-
 }
 
 // The user service definition.
