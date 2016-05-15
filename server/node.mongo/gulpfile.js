@@ -6,6 +6,7 @@ var gulp = require('gulp');
 var uglify = require('gulp-uglify');
 var concat = require('gulp-concat');
 var clean = require('gulp-clean');
+var rename = require('gulp-rename');
 var generator = require('../../codegen/task/generator');
 
 var option = {
@@ -18,7 +19,8 @@ var template = {
     mongoose_dao: '../../codegen/template/mongoose-dao.mustache',
     business: '../../codegen/template/business.mustache',
     api: '../../codegen/template/api.mustache',
-    inter: '../../codegen/template/interface.mustache'
+    inter: '../../codegen/template/interface.mustache',
+    proto: '../../codegen/template/proto.mustache'
 }
 
 gulp.task('clear', function () {
@@ -56,4 +58,13 @@ gulp.task('inter', function () {
         .pipe(gulp.dest('interface/gen/'));
 });
 
-gulp.task('default', ['clear', 'model', 'dao', 'business', 'api', 'inter']);
+gulp.task('proto', function () {
+    return gulp.src(option.definition)
+        .pipe(generator({template: template.proto}))
+        .pipe(rename({
+            extname:'.proto'
+        }))
+        .pipe(gulp.dest('../../protos/gen/'));
+});
+
+gulp.task('default', ['clear', 'model', 'dao', 'business', 'api', 'inter', 'proto']);

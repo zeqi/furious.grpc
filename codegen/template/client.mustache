@@ -1,7 +1,13 @@
+/**
+* Created by zeqi
+* @module client-->{{&moduleName}}
+* @auto-gen
+* Note: auto-gen code, NOT allowed to modify
+*/
 var grpc = require('grpc');
 
-var PROTO_PATH = __dirname + '/../../../protos/user.proto';
-var proto = grpc.load(PROTO_PATH).node_mongo;
+var PROTO_PATH = __dirname + '/../../../protos/{{&moduleName}}.proto';
+var proto = grpc.load(PROTO_PATH).{{&packageName}};
 
 //console.log(grpc);
 //console.log(proto);
@@ -22,13 +28,5 @@ console.log(new proto.Res_Docs());
 console.log(new proto.Res_Docs_count(1, 2, '3333', {list: [], count: 0}));*/
 //console.log(eachAttributes(proto.Res_Doc));
 
-module.exports.proto = proto;
-var api = new proto.User('localhost:50051', grpc.credentials.createInsecure());
-console.log(api.$channel);
-api.$channel.getConnectivityState(function (state) {
-    console.log(state);
-});
-/*api.$channel.watchConnectivityState(function (state) {
-    console.log(state);
-});*/    
-module.exports.api = api;
+module.exports.Proto = proto;
+module.exports.Api = new proto.User('localhost:50051', grpc.credentials.createInsecure());

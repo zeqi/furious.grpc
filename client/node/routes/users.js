@@ -1,8 +1,8 @@
 var express = require('express');
 var router = express.Router();
 var user = require('../service/user');
-var userProto = user.Proto;
-var userApi = user.Api;
+var userProto = user.proto;
+var userApi = user.api;
 
 /* GET users listing. */
 router.get('/', function (req, res, next) {

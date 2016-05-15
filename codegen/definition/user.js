@@ -16,11 +16,15 @@ module.exports = {
     schema: [{
         name: 'mobile',
         type: 'String',
+        protoType: 'string',
+        serial: 1,
         description: 'User current use phone number, Do not repeat in the collection or table',
         comma: true,
     }, {
         name: 'name',
         type: 'String',
+        protoType: 'string',
+        serial: 2,
         description: 'User name',
         comma: true
     }, {
@@ -29,6 +33,8 @@ module.exports = {
         + 'type: Number,'
         + 'default: 0'
         + '}',
+        protoType: 'int32',
+        serial: 3,
         description: 'Current user status active|verified',
         comma: true
     }, {
@@ -37,6 +43,8 @@ module.exports = {
         + 'type: Number,'
         + 'default: 0'
         + '}',
+        protoType: 'int32',
+        serial: 4,
         description: 'Current user gender 0:未知,1:男.2:女',
         comma: true
     }, {
@@ -45,6 +53,8 @@ module.exports = {
         + 'type: Date,'
         + 'default: Date.now'
         + '}',
+        protoType: 'string',
+        serial: 5,
         description: 'Current user create time',
         comma: false
     }],
@@ -78,5 +88,13 @@ module.exports = {
     //========================
     //  Interface info
     //========================
+    serviceName: 'User',
+
+    //========================
+    //  Proto info
+    //========================
+    syntax: 'proto3',
+    imports: ['comm'],
+    packageName: 'node_mongo',
     serviceName: 'User'
 }

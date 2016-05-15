@@ -35,7 +35,12 @@ class Base {
         var self = this;
         var request = req.request;
         return this.business.find(request.condition, request.pageIndex, request.pageSize, request.sort).then(function (data) {
-            return callback(null, new self.res.OK(self.normalize(data)));
+            try {
+                return callback(null, new self.res.OK(self.normalize(data)));
+            }
+            catch (err){
+                return callback(null, new self.res.Error([]));
+            }
         }).fail(function (err) {
             return callback(null, new self.res.Error(self.resCode.res201, err.message));
         })

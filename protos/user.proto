@@ -1,117 +1,21 @@
 syntax = "proto3";
 
-import "comm.proto";
+import "gen/user.proto";
 
-//option java_package = "com.google.apps.jspb.proto";
-//option java_multiple_files = true;
 package node_mongo;
-
-message DocModel {
-    optional string _id = 1;
-    optional string mobile = 2;
-    optional string name = 3;
-    optional string createTime = 4;
-    optional int32 gender = 5;
-    optional int32 status = 6;
-    optional int32 __v = 7;
-}
-
-message Req_Doc {
-    optional string mobile = 1;
-    optional string name = 2;
-    optional int32 gender = 3;
-}
-
-message Req_Docs {
-    repeated Req_Doc docs = 1;
-}
-
-message Req_Condition {
-    optional string condition = 1;
-}
-
-message Req_Condition_page_sort {
-    optional string condition = 1;
-    optional int32 pageIndex = 2;
-    optional int32 pageSize = 3;
-    optional string sort = 4;
-}
-
-message Req_Condition_update_options {
-    optional string condition = 1;
-    optional string update = 2;
-    optional string options = 3;
-}
-
-message Req_Id_update_options {
-    optional string id = 1;
-    optional string update = 2;
-    optional string options = 3;
-}
-
-message Req_Id_options {
-    optional string id = 1;
-    optional string options = 2;
-}
-
-message Res_Doc {
-    optional int32 status = 1;
-    optional int32 code = 2;
-    optional string msg = 3;
-    optional DocModel data = 4;
-}
-
-message Res_Docs {
-    optional int32 status = 1;
-    optional int32 code = 2;
-    optional string msg = 3;
-    repeated DocModel data = 4;
-}
-
-message Docs_List_count {
-    optional int32 count = 1;
-    repeated DocModel list = 2;
-}
-
-message Res_Docs_list_count {
-    optional int32 status = 1;
-    optional int32 code = 2;
-    optional string msg = 3;
-    optional Docs_List_count data = 4;
-}
-message Res_Docs_count {
-    optional int32 status = 1;
-    optional int32 code = 2;
-    optional string msg = 3;
-    optional int32 data = 4;
-}
 
 // The user service definition.
 service User {
-    rpc save (Req_Doc) returns (Res_Doc) {};
-    rpc create (Req_Docs) returns (Res_Docs) {};
-    rpc find (Req_Condition_page_sort) returns (Res_Docs) {};
-    rpc findById (Id) returns (Res_Doc) {};
-    rpc findOne (Req_Condition) returns (Res_Docs) {};
-    rpc findListAndCount (Req_Condition_page_sort) returns (Res_Docs_list_count) {};
-    rpc count (Req_Condition) returns (Res_Docs_count) {};
-    rpc update (Req_Condition_update_options) returns (Res_Docs) {};
-    rpc findByIdAndUpdate (Req_Id_update_options) returns (Res_Doc) {};
-    rpc remove (Req_Condition) returns (Res_Docs) {};
-    rpc findByIdAndRemove (Req_Id_options) returns (Res_Doc) {};
-    rpc findByName (Name) returns (Res_Docs) {};
-
-}
-
-extend Res {
-    optional DocModel data = 4;
-}
-
-message Msg {
-    oneof oneof_field {
-        uint32 oneof_uint32 = 111;
-        //DocModel oneof_foreign_message = 112;
-        string oneof_string = 113;
-        bytes oneof_bytes = 114;
-    }
+    rpc save(Req_doc) returns(Res_doc) {};
+    rpc create(Req_docs) returns(Res_docs) {};
+    rpc find(Req_condition_page_sort) returns(Res_docs) {};
+    rpc findById(Id) returns(Res_doc) {};
+    rpc findOne(Req_condition) returns(Res_docs) {};
+    rpc findListAndCount(Req_condition_page_sort) returns(Res_docs_list_count) {};
+    rpc count(Req_condition) returns(Res_docs_count) {};
+    rpc update(Req_condition_update_options) returns(Res_docs) {};
+    rpc findByIdAndUpdate(Req_id_update_options) returns(Res_doc) {};
+    rpc remove(Req_condition) returns(Res_docs) {};
+    rpc findByIdAndRemove(Req_id_options) returns(Res_doc) {};
+    rpc findByName(Name) returns(Res_docs) {};
 }
