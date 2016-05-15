@@ -31,7 +31,7 @@ class Dao extends BaseDao {
         if (!name) {
             return Q.reject(self.paramError(name)).nodeify(callback);
         }
-        var task = model.findByName(name, callback);
+        var task = self.model.findByName(name, callback);
         return self.execTask(task, callback, self.method).nodeify(callback);
     }
 
@@ -41,7 +41,7 @@ class Dao extends BaseDao {
         if (!status) {
             return Q.reject(self.paramError(status)).nodeify(callback);
         }
-        var dog = new model({
+        var dog = new self.model({
             status: status
         });
         var task = dog.findByStatus(callback);

@@ -3,6 +3,6 @@
  * @module business-->user
  */
 
-var Business = require('./gen/user');
+var business = require('./gen/user');
 
-module.exports = Business;
+module.exports = business;

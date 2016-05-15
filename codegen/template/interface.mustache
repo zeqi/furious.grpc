@@ -11,7 +11,7 @@ var grpc = require('grpc');
 var api = require('../../api/{{&moduleName}}');
 
 var PROTO_PATH = __dirname + '/../../../../protos/{{&moduleName}}.proto';
-var proto = grpc.load(PROTO_PATH);
+var proto = grpc.load(PROTO_PATH).node_mongo;
 
 var BaseInterface = require('../base');
 
@@ -28,6 +28,13 @@ class Interface extends BaseInterface {
         {{#schena_methods}}
         self.interfaceDic.{{&name}} = self.api.{{&name}};
         {{/schena_methods}}
+
+        self.interfaceDic.api = self.api;
+        self.interfaceDic.business = self.api.business;
+        self.interfaceDic.normalize = self.api.normalize;
+        self.interfaceDic.res = self.api.res;
+        self.interfaceDic.resCode = self.api.resCode;
+
         return self.interfaceDic;
     }
 

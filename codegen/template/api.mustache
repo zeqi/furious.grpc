@@ -33,6 +33,7 @@ class Api extends BaseApi {
 
     {{#schena_methods}}
         {{&name}}(req, callback) {
+            var self = this;
             var request = req.request;
             return self.business.{{&name}}({{#conditionParams}}{{#isparam}}request.{{&name}}{{#comma}},{{/comma}}{{/isparam}}{{/conditionParams}}).then(function (data) {
                 return callback(null, new self.res.OK(self.normalize(data)));

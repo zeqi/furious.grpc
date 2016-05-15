@@ -30,6 +30,7 @@ class Api extends BaseApi {
     }
 
     findByStatus(req, callback) {
+        var self = this;
         var request = req.request;
         return self.business.findByStatus(request.status).then(function(data) {
             return callback(null, new self.res.OK(self.normalize(data)));

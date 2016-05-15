@@ -13,17 +13,6 @@ class Base {
         this.baseInterface();
     }
 
-    addInterface(inters) {
-        if (!Array.isArray(inters)) {
-            inters = [inters];
-        }
-
-        inters.forEach(function (inter) {
-            interfaceDic[inter] = self.api[inter];
-        });
-    }
-
-
     baseInterface() {
         var self = this;
         self.interfaceDic = {

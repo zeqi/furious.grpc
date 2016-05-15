@@ -36,7 +36,7 @@ class Dao extends BaseDao {
                     }
                 {{/isparam}}
             {{/conditionParams}}
-            var task = model.{{&name}}({{#conditionParams}}{{#isparam}}{{&name}},{{/isparam}}{{/conditionParams}} callback);
+            var task = self.model.{{&name}}({{#conditionParams}}{{#isparam}}{{&name}},{{/isparam}}{{/conditionParams}} callback);
             return self.execTask(task, callback, self.method).nodeify(callback);
         }
     {{/schema_statics}}
@@ -52,7 +52,7 @@ class Dao extends BaseDao {
                     }
                 {{/isparam}}
             {{/conditionParams}}
-            var dog = new model({ {{#conditionParams}}{{&name}}:{{&name}}{{#comma}},{{/comma}}{{/conditionParams}} });
+            var dog = new self.model({ {{#conditionParams}}{{&name}}:{{&name}}{{#comma}},{{/comma}}{{/conditionParams}} });
             var task = dog.{{&name}}(callback);
             return self.execTask(task, callback, self.method).nodeify(callback);
         }

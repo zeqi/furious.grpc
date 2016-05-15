@@ -7,7 +7,7 @@
 var grpc = require('grpc');
 
 var PROTO_PATH = __dirname + '/../../../protos/user.proto';
-var proto = grpc.load(PROTO_PATH);
+var proto = grpc.load(PROTO_PATH).node_mongo;
 
 //console.log(grpc);
 
