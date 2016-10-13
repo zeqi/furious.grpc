@@ -9,3 +9,5 @@ public/emulator/images
 *.idea
 test
 test/*
+*-compiled.js*
+docs
