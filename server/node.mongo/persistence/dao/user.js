@@ -21,6 +21,9 @@ var schema = Model.schema;
  * Mongodb data access portal of function
  */
 class Dao extends BaseDao {
+    /**
+     * Dao Class constructor
+     */
     constructor() {
         super(model);
     }

@@ -7,6 +7,7 @@ var uglify = require('gulp-uglify');
 var concat = require('gulp-concat');
 var clean = require('gulp-clean');
 var rename = require('gulp-rename');
+var jsdoc = require('gulp-jsdoc3');
 var generator = require('../../codegen/task/generator');
 
 var option = {
@@ -62,9 +63,38 @@ gulp.task('proto', function () {
     return gulp.src(option.definition)
         .pipe(generator({template: template.proto}))
         .pipe(rename({
-            extname:'.proto'
+            extname: '.proto'
         }))
         .pipe(gulp.dest('../../protos/gen/'));
 });
 
-gulp.task('default', ['clear', 'model', 'dao', 'business', 'api', 'inter', 'proto']);
+gulp.task('jsdoc', function () {
+    return gulp.src(['interface/*', 'api/*', 'business/*', 'persistence/*'], {read: false})
+        .pipe(jsdoc({
+            "tags": {
+                "allowUnknownTags": true
+            },
+            "opts": {
+                "destination": "./docs/gen"
+            },
+            "plugins": [
+                "plugins/markdown"
+            ],
+            "templates": {
+                "cleverLinks": true,
+                "monospaceLinks": false,
+                "default": {
+                    "outputSourceFiles": true
+                },
+                "path": "ink-docstrap",
+                "theme": "cerulean",
+                "navType": "vertical",
+                "linenums": true,
+                "dateFormat": "MMMM Do YYYY, h:mm:ss a"
+            }
+        }));
+    /*.pipe(jsdoc.parser({name: 'docs', version: '0.0.1'}, 'zeqi'))
+     .pipe(gulp.dest('jsdoc'));*/
+});
+
+gulp.task('default', ['clear', 'model', 'dao', 'business', 'api', 'inter', 'proto', 'jsdoc']);

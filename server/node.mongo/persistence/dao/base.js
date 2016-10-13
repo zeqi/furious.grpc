@@ -1,5 +1,6 @@
 /**
- * Created by zhuxijun on 16-4-8.
+ * Operation database base module
+ * @module dao-->base
  */
 
 'use strict'
@@ -18,7 +19,21 @@ var validate = require('../../utils/validate');
 //===============================
 //      Logical start
 //===============================
+/**
+ * Property to return when an error occurs in the operating database
+ * @class
+ */
 class DaoError {
+    /**
+     * DaoError class constructor
+     * @constructor
+     * @param message
+     * @param value
+     * @param name
+     * @param kind
+     * @param path
+     * @param reason
+     */
     constructor(message, value, name, kind, path, reason) {
         this.message = message || 'Dao Error';
         this.value = value || '';
@@ -29,6 +44,9 @@ class DaoError {
     }
 }
 
+/**
+ * Operation database base class
+ */
 class Base {
     constructor(model) {
         this.model = model;
@@ -37,6 +55,11 @@ class Base {
         this.customPageSize = 10;
     }
 
+    /**
+     * Error handler
+     * @param task {object} The task being performed
+     * @returns {DaoError}
+     */
     taskError(task) {
         var self = this;
         return new DaoError('Exec function ' + self.method + ' find invalid task:' + JSON.stringify(task), task)
